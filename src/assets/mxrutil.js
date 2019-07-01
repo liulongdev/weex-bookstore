@@ -1,12 +1,43 @@
 const stream = weex.requireModule('stream')
+const mobileUtil = weex.requireModule('mxrutil')
 let mxrUtil = {
   get: get,
   post: post,
   mxrEncoder: mxrEncoder,
-  mxrDecoder: mxrDecoder
+  mxrDecoder: mxrDecoder,
+  platform: platform,
+  isIOS: isIOS,
+  isAndroid: isAndroid,
+  isWeb: isWeb
+}
+
+function platform () {
+  return weex.config.env.platform
+}
+
+function isIOS () {
+  return weex.config.env.platform === 'iOS'
+}
+
+function isAndroid () {
+  return weex.config.env.platform === 'Android'
+}
+
+function isWeb () {
+  return weex.config.env.platform === 'Web'
 }
 
 function get (api, param, callback) {
+  if (isIOS()) {
+    let option = {
+      'url': 'https://bs-api.mxrcorp.cn' + api,
+      'method': 'get'
+    }
+    if (param) {
+      option['query'] = param
+    }
+    return mobileUtil.fetch(option, callback)
+  }
   if (param !== undefined || param !== null) {
     api = api + '?'
     for (let key in param) {
@@ -24,7 +55,16 @@ function get (api, param, callback) {
 }
 
 function post (api, param, callback) {
-  if (param !== undefined || param !== null) {
+  if (isIOS()) {
+    let option = {
+      'url': 'https://bs-api.mxrcorp.cn' + api,
+      'method': 'post'
+    }
+    if (param) {
+      option['body'] = param
+    }
+    return mobileUtil.fetch(option, callback)
+  } else if (param !== undefined || param !== null) {
     let httpBody = JSON.stringify(param)
     // need to do 加密
     return stream.fetch({

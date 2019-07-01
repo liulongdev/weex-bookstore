@@ -135,7 +135,7 @@ exports.default = {
 var _require = __webpack_require__(2),
     router = _require.router;
 
-var MyApp = __webpack_require__(16);
+var MyApp = __webpack_require__(12);
 
 var mixins = __webpack_require__(0);
 Vue.mixin(mixins);
@@ -164,7 +164,7 @@ var _index = __webpack_require__(4);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(13);
+var _index3 = __webpack_require__(9);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -2869,7 +2869,7 @@ __vue_styles__.push(__webpack_require__(5)
 __vue_exports__ = __webpack_require__(6)
 
 /* template */
-var __vue_template__ = __webpack_require__(12)
+var __vue_template__ = __webpack_require__(8)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -2881,7 +2881,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "/Users/Martin/Dev/weex/bookstore/src/assets/views/bookstore/index.vue"
+__vue_options__.__file = "/Users/Martin/Dev/MXR/weex-bookstore/src/assets/views/bookstore/index.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 __vue_options__._scopeId = "data-v-6a3247c7"
@@ -2904,22 +2904,53 @@ module.exports = __vue_exports__
 
 module.exports = {
   "wrapper": {
+    "paddingLeft": "15",
+    "paddingRight": "15",
     "justifyContent": "center",
-    "alignItems": "center"
+    "marginBottom": "90"
   },
-  "greeting": {
-    "textAlign": "center",
-    "marginTop": "70",
-    "fontSize": "50",
-    "color": "#41B883"
+  "image": {
+    "width": "720",
+    "height": "300",
+    "borderRadius": "10"
   },
-  "message": {
-    "marginTop": "30",
-    "marginRight": "30",
-    "marginBottom": "30",
-    "marginLeft": "30",
-    "fontSize": "32",
-    "color": "#727272"
+  "slider": {
+    "width": "720",
+    "height": "300"
+  },
+  "frame": {
+    "width": "720",
+    "height": "300",
+    "position": "relative"
+  },
+  "floorView": {
+    "marginTop": "40"
+  },
+  "floorTitleLabel": {
+    "marginBottom": "10",
+    "color": "#333333",
+    "fontSize": "36"
+  },
+  "bookListScroller": {
+    "width": "720",
+    "height": "320",
+    "flexDirection": "row"
+  },
+  "bookView": {
+    "width": "190",
+    "height": "320",
+    "marginLeft": "20",
+    "marginRight": "20"
+  },
+  "bookImage": {
+    "width": "190",
+    "height": "250",
+    "borderRadius": "8"
+  },
+  "bookNameLabel": {
+    "fontSize": "24",
+    "color": "#666666",
+    "lines": 2
   }
 }
 
@@ -2952,63 +2983,79 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // const superagent = require('superagent');
+var myUtil = weex.requireModule('mxrutil');
 var stream = weex.requireModule('stream');
 
 exports.default = {
   data: function data() {
     return {
-      myMessage: 'hello, martin'
+      bannerArray: [],
+      dataArray: [],
+      test: 0
     };
   },
 
   created: function created() {
     var _this = this;
 
-    console.log('hello >>>> create');
-    this.myMessage = 'Martin, hi' + _mixins2.default;
-
-    console.log(JSON.stringify(_mixins2.default));
-
+    // 获取首页banner数据
     _mxrutil2.default.get('/core/banner/template/1', {}, function (res) {
-      _this.myMessage = 'res :' + res.status;
-      /// need to do 手机端不支持buffer？
-      console.log(' respons : ', _mxrutil2.default.mxrDecoder(res.data.Body));
+      // console.log('>>> respons : ', JSON.stringify(res));
+      if (res.data.isSuccess) {
+        _this.bannerArray = res.data.Body;
+        console.log(JSON.stringify(res.data.Body));
+      }
+      if (_mxrutil2.default.isWeb()) {
+        console.log(JSON.parse(_mxrutil2.default.mxrDecoder(res.data.Body)));
+        _this.bannerArray = JSON.parse(_mxrutil2.default.mxrDecoder(res.data.Body));
+        // console.log(MxrUtil.mxrDecoder(res.data.Body))
+      }
     }.bind(this));
 
-    // let headers = 'aLIAAAAmTxwcEB94HU9XT1lPWX8gHjkAGRBvR19cb2VvLB0BK0hfXlZaW59nj5qbnJ2bYX+Rb63Sw9be2oSpb5dvb4V/n4qSlpqbX2dPXU9FT46hobSpb0dvXlFRXV1ZWV1dQUEdHRkZHR0RER0dGRkdHWFhHR0ZGRxvFR8pKtMmLiIswxQeHBJPZ19qa1hsU2BvbWJOTlleWEFPP11iT01SVERBaGSfbWxhkWabnpGPKA==';
-
-    // stream.fetch({
-    //   method: 'GET',
-    //   type: 'json',
-    //   headers: {'mxr-key': headers},
-    //   url: 'https://bs-api.mxrcorp.cn' + '/core/banner/template/1'
-    // }, ((res) => {
-    //   console.log(JSON.stringify(res.data))
-    // }).bind(this))
-
-
-    // Methods.MXRGET('https://liulong.site', {}, ((res) => {
-    //   this.myMessage = ' res status : ' + res.status
-    // }).bind(this))
-
-    // stream.fetch({
-    //     method: 'GET',
-    //     url: 'https://liulong.site',
-    //     type:'json'
-    //   }, function(ret) {
-    //     this.myMessage = '>>>>' + ret.status;
-    //     console.log('>>> res : ', ret);
-    //   }.bind(this));
-
-    // superagent
-    //   .get('https://liulong.site')
-    //   .end((err, res) => {
-    //     this.myMessage = 'lsjkdflsjlfksdjlf';
-    //     console.log('hello >>>> get back', err, 'res', res);
-    //     // Calling the end function will send the request
-    //   });
+    // 获取首页数据
+    _mxrutil2.default.get('/core/home/0', {
+      page: '1',
+      rows: '20',
+      search: 'normal',
+      topNums: '20',
+      region: '0',
+      uid: '0',
+      deviceId: 'sdfavasdfsdfasd'
+    }, function (res) {
+      if (res.data.isSuccess) {
+        _this.dataArray = res.data.Body.list;
+        // console.log('>>>>> page data', JSON.stringify(res.data.Body))
+      }
+      if (_mxrutil2.default.isWeb()) {
+        console.log(JSON.parse(_mxrutil2.default.mxrDecoder(res.data.Body)));
+        _this.dataArray = JSON.parse(_mxrutil2.default.mxrDecoder(res.data.Body)).list;
+        console.log(_this.dataArray);
+      }
+    }.bind(this));
   },
   methods: {
     clicked: function clicked() {
@@ -3028,14 +3075,45 @@ exports.default = {
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var stream = weex.requireModule('stream');
+var mobileUtil = weex.requireModule('mxrutil');
 var mxrUtil = {
   get: get,
   post: post,
   mxrEncoder: mxrEncoder,
-  mxrDecoder: mxrDecoder
+  mxrDecoder: mxrDecoder,
+  platform: platform,
+  isIOS: isIOS,
+  isAndroid: isAndroid,
+  isWeb: isWeb
 };
 
+function platform() {
+  return weex.config.env.platform;
+}
+
+function isIOS() {
+  return weex.config.env.platform === 'iOS';
+}
+
+function isAndroid() {
+  return weex.config.env.platform === 'Android';
+}
+
+function isWeb() {
+  return weex.config.env.platform === 'Web';
+}
+
 function get(api, param, callback) {
+  if (isIOS()) {
+    var option = {
+      'url': 'https://bs-api.mxrcorp.cn' + api,
+      'method': 'get'
+    };
+    if (param) {
+      option['query'] = param;
+    }
+    return mobileUtil.fetch(option, callback);
+  }
   if (param !== undefined || param !== null) {
     api = api + '?';
     for (var key in param) {
@@ -3053,7 +3131,16 @@ function get(api, param, callback) {
 }
 
 function post(api, param, callback) {
-  if (param !== undefined || param !== null) {
+  if (isIOS()) {
+    var option = {
+      'url': 'https://bs-api.mxrcorp.cn' + api,
+      'method': 'post'
+    };
+    if (param) {
+      option['body'] = param;
+    }
+    return mobileUtil.fetch(option, callback);
+  } else if (param !== undefined || param !== null) {
     var httpBody = JSON.stringify(param);
     // need to do 加密
     return stream.fetch({
@@ -3120,11 +3207,7 @@ function mxrDecoder(str) {
 module.exports = mxrUtil;
 
 /***/ }),
-/* 8 */,
-/* 9 */,
-/* 10 */,
-/* 11 */,
-/* 12 */
+/* 8 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -3133,25 +3216,78 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.clicked
     }
-  }, [_c('text', {
-    staticClass: ["greeting"]
-  }, [_vm._v("Book store : " + _vm._s(_vm.myMessage))]), _c('router-view')], 1)
+  }, [_c('scroller', {
+    staticClass: ["scroller"],
+    attrs: {
+      "showScrollbar": "false"
+    }
+  }, [_c('slider', {
+    staticClass: ["slider"],
+    attrs: {
+      "interval": "3000",
+      "autoPlay": "true"
+    }
+  }, _vm._l((_vm.bannerArray), function(banner) {
+    return _c('div', {
+      staticClass: ["frame"]
+    }, [_c('image', {
+      staticClass: ["image"],
+      attrs: {
+        "resize": "cover",
+        "src": banner.bannerUrl
+      }
+    })])
+  })), _vm._l((_vm.dataArray), function(floor) {
+    return _c('div', {
+      staticClass: ["contentWrapper"]
+    }, [(floor.type === 1) ? _c('div', {
+      staticClass: ["floorView"]
+    }, [_c('scroller', {
+      staticClass: ["bookListScroller"],
+      attrs: {
+        "showScrollbar": "false",
+        "scrollDirection": "horizontal"
+      }
+    }, _vm._l((floor.items), function(item) {
+      return _c('div', {
+        staticClass: ["bookView"]
+      }, [_c('image', {
+        staticClass: ["bookImage"],
+        attrs: {
+          "resize": "cover",
+          "src": item.itemIcon
+        }
+      }), _c('text', {
+        staticClass: ["bookNameLabel"]
+      }, [_vm._v(_vm._s(item.itemName))])])
+    }))]) : _vm._e(), (floor.type === 3) ? _c('div', {
+      staticClass: ["floorView"]
+    }, [_c('text', {
+      staticClass: ["floorTitleLabel"]
+    }, [_vm._v(_vm._s(floor.moduleName))]), _c('image', {
+      staticClass: ["image"],
+      attrs: {
+        "resize": "cover",
+        "src": floor.items[0].itemIcon
+      }
+    })]) : _vm._e()])
+  })], 2), _c('router-view')], 1)
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 13 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(14)
+__vue_styles__.push(__webpack_require__(10)
 )
 
 /* template */
-var __vue_template__ = __webpack_require__(15)
+var __vue_template__ = __webpack_require__(11)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -3163,7 +3299,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "/Users/Martin/Dev/weex/bookstore/src/assets/views/classroom/index.vue"
+__vue_options__.__file = "/Users/Martin/Dev/MXR/weex-bookstore/src/assets/views/classroom/index.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 __vue_options__._scopeId = "data-v-59c0e0c2"
@@ -3181,7 +3317,7 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 14 */
+/* 10 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -3206,7 +3342,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 15 */
+/* 11 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -3219,23 +3355,23 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 16 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(17)
+__vue_styles__.push(__webpack_require__(13)
 )
-__vue_styles__.push(__webpack_require__(18)
+__vue_styles__.push(__webpack_require__(14)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(19)
+__vue_exports__ = __webpack_require__(15)
 
 /* template */
-var __vue_template__ = __webpack_require__(25)
+var __vue_template__ = __webpack_require__(21)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -3247,7 +3383,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "/Users/Martin/Dev/weex/bookstore/src/App.vue"
+__vue_options__.__file = "/Users/Martin/Dev/MXR/weex-bookstore/src/App.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 __vue_options__._scopeId = "data-v-7ba5bd90"
@@ -3265,13 +3401,13 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 17 */
+/* 13 */
 /***/ (function(module, exports) {
 
 module.exports = {}
 
 /***/ }),
-/* 18 */
+/* 14 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -3288,7 +3424,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 19 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3298,11 +3434,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _util = __webpack_require__(20);
+var _util = __webpack_require__(16);
 
 var _util2 = _interopRequireDefault(_util);
 
-var _tabBar = __webpack_require__(21);
+var _tabBar = __webpack_require__(17);
 
 var _tabBar2 = _interopRequireDefault(_tabBar);
 
@@ -3360,7 +3496,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 20 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3432,21 +3568,21 @@ var utilFunc = {
 exports.default = utilFunc;
 
 /***/ }),
-/* 21 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(22)
+__vue_styles__.push(__webpack_require__(18)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(23)
+__vue_exports__ = __webpack_require__(19)
 
 /* template */
-var __vue_template__ = __webpack_require__(24)
+var __vue_template__ = __webpack_require__(20)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -3458,7 +3594,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "/Users/Martin/Dev/weex/bookstore/src/assets/components/tabBar.vue"
+__vue_options__.__file = "/Users/Martin/Dev/MXR/weex-bookstore/src/assets/components/tabBar.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 __vue_options__._scopeId = "data-v-535aef24"
@@ -3476,7 +3612,7 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 22 */
+/* 18 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -3545,7 +3681,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 23 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3671,7 +3807,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 24 */
+/* 20 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -3710,7 +3846,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 25 */
+/* 21 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
