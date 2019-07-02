@@ -1,5 +1,5 @@
 <template>
-  <div  @click="clicked" class="wrapper">
+  <div class="wrapper">
     <scroller class="scroller" show-scrollbar="false">
       <slider class="slider" interval="3000" auto-play="true">
         <div class="frame" v-for="banner in bannerArray">
@@ -17,7 +17,7 @@
             </scroller>
           </div>
           <!-- 专区楼层 -->
-          <div class="floorView" v-if="floor.type === 3">
+          <div @click="goSubjuectPage(floor.items[0].itemId)" class="floorView" v-if="floor.type === 3 && floor.items.length > 0">
             <text class="floorTitleLabel">{{floor.moduleName}}</text>
             <image class="image" resize="stretch" :src="floor.items[0].itemIcon"></image>
           </div>
@@ -52,7 +52,7 @@
 
 <script>
 import MxrUtil from '../../mxrutil.js'
-var navigator = weex.requireModule('navigator')
+const navigator = weex.requireModule('navigator')
 
 export default {
   data () {
@@ -99,22 +99,22 @@ export default {
     })
   },
   methods: {
-    clicked: function () {
-      navigator.push({
-        url: 'http://192.168.2.3:3000/weex/HelloWorld.js?test=hellohellomartin',
-        animated: 'true'
-      }, event => {
-        console.log('>>> push callback ', event)
-      })
-      this.myMessage = 'Click my button'
-    },
     goBookDetailPage: function (bookGuid) {
       console.log('>>>>> click book bookGuid: ', bookGuid)
       navigator.push({
-        url: `http://192.168.2.3:3000/weex/bookdetail.js?bookGuid=${bookGuid}`,
+        url: `http://192.168.31.233:8081/dist/views/bookstore/bookdetail.js?bookGuid=${bookGuid}`,
         animated: 'true'
       }, event => {
-        console.log('>>> push callback ', event)
+        console.log('>>> push bookdetail callback ', event)
+      })
+    },
+    goSubjuectPage: function (recommendId) {
+      console.log('>>>>> click subject id : ', recommendId)
+      navigator.push({
+        url: `http://192.168.31.233:8081/dist/views/bookstore/subjectbooks.js?recommendId=${recommendId}`,
+        animated: 'true'
+      }, event => {
+        console.log('>>>>> push subject callback ', event)
       })
     }
   }
