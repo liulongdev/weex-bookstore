@@ -8,7 +8,7 @@ export default {
       }
     },
     isIpx () {
-      return weex && (weex.config.env.deviceModel === 'iPhone10,3' || weex.config.env.deviceModel === 'iPhone10,6');
+      return weex && (weex.config.env.deviceModel === 'iPhone10,3' || weex.config.env.deviceModel === 'iPhone10,6')
     },
     MXRGET (api, param, callback) {
       if (param !== undefined || param !== null) {

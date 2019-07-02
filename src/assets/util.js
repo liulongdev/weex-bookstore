@@ -39,7 +39,7 @@ let utilFunc = {
         base = h5Base + ''
       }
     } else {
-      base = nativeBase + (!!path? path+'/':'')
+      base = nativeBase + (!path ? path + '/' : '')
     }
 
     const newUrl = base + jsFile

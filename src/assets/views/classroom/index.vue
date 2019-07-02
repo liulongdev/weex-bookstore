@@ -1,11 +1,16 @@
 <template>
   <div class="wrapper">
     <text class="greeting">Class room</text>
-    <router-view/> 
+    <router-view/>
   </div>
 </template>
 
-
+<script>
+export default {
+  created: function () {
+  }
+}
+</script>
 
 <style scoped>
   .wrapper {

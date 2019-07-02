@@ -3,49 +3,68 @@
     <scroller class="scroller" show-scrollbar="false">
       <slider class="slider" interval="3000" auto-play="true">
         <div class="frame" v-for="banner in bannerArray">
-          <image class="image" resize="cover" :src="banner.bannerUrl"></image>
+          <image class="image" resize="stretch" :src="banner.bannerUrl"></image>
         </div>
       </slider>
       <div class="contentWrapper" v-for="floor in dataArray">
-          <!--  -->
+          <!-- 图书列表楼层 -->
           <div class="floorView" v-if="floor.type === 1">
             <scroller class="bookListScroller" show-scrollbar="false" scroll-direction="horizontal">
-              <div class="bookView" v-for="item in floor.items">
-                <image class="bookImage" resize="cover" :src="item.itemIcon"></image>
+              <div class="bookView" v-for="item in floor.items" @click="goBookDetailPage(item.itemId)">
+                <image class="bookImage" resize="stretch" :src="item.itemIcon"></image>
                 <text class="bookNameLabel">{{item.itemName}}</text>
               </div>
             </scroller>
           </div>
-          <!--  -->
+          <!-- 专区楼层 -->
           <div class="floorView" v-if="floor.type === 3">
             <text class="floorTitleLabel">{{floor.moduleName}}</text>
-            <image class="image" resize="cover" :src="floor.items[0].itemIcon"></image>
+            <image class="image" resize="stretch" :src="floor.items[0].itemIcon"></image>
+          </div>
+          <!-- 两个专区楼层 -->
+          <div class="floorView" v-if="floor.type === 4">
+            <div v-if="floor.items.length >= 2">
+              <div class="twoTopicView">
+                <div class="oneTopicView">
+                  <image class="towTopicImage" resize="stretch" :src="floor.items[0].itemIcon"></image>
+                  <text class="topicTitleLabel">{{floor.items[0].itemName}}</text>
+                </div>
+                <div class="oneTopicView secondTopicView">
+                  <image class="towTopicImage" resize="stretch" :src="floor.items[1].itemIcon"></image>
+                  <text class="topicTitleLabel">{{floor.items[1].itemName}}</text>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 标签列表楼层 -->
+          <div class="floorView" v-if="floor.type === 6">
+            <scroller class="tagScrollView" show-scrollbar="false" scroll-direction="horizontal">
+              <div v-for="item in floor.items">
+                <text class="tagLabel">{{item.itemName}}</text>
+              </div>
+            </scroller>
           </div>
       </div>
     </scroller>
-    <router-view/> 
+    <router-view/>
   </div>
 </template>
 
-
 <script>
-// const superagent = require('superagent');
-import Methods from '../../../mixins'
 import MxrUtil from '../../mxrutil.js'
-const myUtil = weex.requireModule('mxrutil')
-const stream = weex.requireModule('stream')
- 
+var navigator = weex.requireModule('navigator')
+
 export default {
   data () {
-    return { 
+    return {
       bannerArray: [],
       dataArray: [],
-      test: 0,
+      test: 0
     }
   },
-  created: function() {
+  created: function () {
     // 获取首页banner数据
-    MxrUtil.get('/core/banner/template/1', {}, ((res) => {
+    MxrUtil.get('/core/banner/template/1', {}, (res) => {
       // console.log('>>> respons : ', JSON.stringify(res));
       if (res.data.isSuccess) {
         this.bannerArray = res.data.Body
@@ -56,11 +75,10 @@ export default {
         this.bannerArray = JSON.parse(MxrUtil.mxrDecoder(res.data.Body))
         // console.log(MxrUtil.mxrDecoder(res.data.Body))
       }
-    }).bind(this)) 
+    })
 
     // 获取首页数据
-    MxrUtil.get('/core/home/0', 
-    {
+    MxrUtil.get('/core/home/0', {
       page: '1',
       rows: '20',
       search: 'normal',
@@ -68,8 +86,8 @@ export default {
       region: '0',
       uid: '0',
       deviceId: 'sdfavasdfsdfasd'
-    }, ((res) => {
-      if(res.data.isSuccess) {
+    }, (res) => {
+      if (res.data.isSuccess) {
         this.dataArray = res.data.Body.list
         // console.log('>>>>> page data', JSON.stringify(res.data.Body))
       }
@@ -78,29 +96,44 @@ export default {
         this.dataArray = JSON.parse(MxrUtil.mxrDecoder(res.data.Body)).list
         console.log(this.dataArray)
       }
-    }).bind(this))
+    })
   },
   methods: {
     clicked: function () {
+      navigator.push({
+        url: 'http://192.168.2.3:3000/weex/HelloWorld.js?test=hellohellomartin',
+        animated: 'true'
+      }, event => {
+        console.log('>>> push callback ', event)
+      })
       this.myMessage = 'Click my button'
+    },
+    goBookDetailPage: function (bookGuid) {
+      console.log('>>>>> click book bookGuid: ', bookGuid)
+      navigator.push({
+        url: `http://192.168.2.3:3000/weex/bookdetail.js?bookGuid=${bookGuid}`,
+        animated: 'true'
+      }, event => {
+        console.log('>>> push callback ', event)
+      })
     }
   }
 
 }
 </script>
 
-
 <style scoped>
   .wrapper {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
     justify-content: center;
     /* align-items: center; */
     margin-bottom: 90px;
   }
   /* slider */
   .image {
-    width: 720px;
+    /* flex: 1; */
+    width: 710px;
     height: 300px;
     border-radius: 10px;
   }
@@ -112,10 +145,11 @@ export default {
     /* border-radius: 10px; */
   }
   .frame {
-    width: 720px;
+    width: 710px;
     height: 300px;
     position: relative;
   }
+  /* 楼层 */
   .floorView {
     margin-top: 40px;
   }
@@ -124,6 +158,7 @@ export default {
     color: #333;
     font-size: 36px;
   }
+  /* 图书列表楼层 */
    .bookListScroller {
     width: 720px;
     height: 320px;
@@ -132,7 +167,7 @@ export default {
   .bookView {
     width: 190px;
     height: 320px;
-    margin-left: 20px;
+    /* margin-left: 20px; */
     margin-right: 20px;
   }
   .bookImage {
@@ -141,8 +176,45 @@ export default {
     border-radius: 8px;
   }
   .bookNameLabel {
+    margin-top: 6px;
     font-size: 24px;
     color: #666;
     lines: 2;
+  }
+  /* 两个专区楼层 */
+  .twoTopicView {
+    flex-direction: row;
+    justify-content:space-between;
+  }
+  .oneTopicView {
+    flex: 1;
+  }
+  .secondTopicView {
+    direction: rtl;
+  }
+  .towTopicImage {
+    width: 340px;
+    height: 300px;
+    border-radius: 8px;
+  }
+  .topicTitleLabel {
+    margin-top: 10px;
+    font-size: 30px;
+    color: #666;
+    lines: 1;
+  }
+  /* 标签列表楼层 */
+  .tagScrollView {
+    flex-direction: row;
+  }
+  .tagLabel {
+    border-radius: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 16px;
+    padding-right: 16px;
+    margin-right: 20px;
+    color: #333;
+    background-color:blueviolet;
   }
 </style>

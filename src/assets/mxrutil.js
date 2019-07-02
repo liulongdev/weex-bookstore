@@ -8,7 +8,8 @@ let mxrUtil = {
   platform: platform,
   isIOS: isIOS,
   isAndroid: isAndroid,
-  isWeb: isWeb
+  isWeb: isWeb,
+  getBookPath: getBookPath
 }
 
 function platform () {
@@ -95,15 +96,15 @@ function mxrEncoder (str) {
   const random = Math.ceil(Math.random() * 127)
 
   for (let bufIndex = 0; bufIndex < strBufLength; bufIndex++) {
-    strBuf[bufIndex] = (strBuf[bufIndex] + (bufIndex ^ random)) ^ (random ^ (strBufLength - bufIndex));
+    strBuf[bufIndex] = (strBuf[bufIndex] + (bufIndex ^ random)) ^ (random ^ (strBufLength - bufIndex))
   }
 
   let myBuffer = Buffer.alloc(PACKET_HEADER_SIZE)
   myBuffer[0] = random
   myBuffer[1] = PACKET_HEADER_SIZE + strBufLength
 
-  let newBuffer = Buffer.concat([myBuffer, strBuf], PACKET_HEADER_SIZE + strBuf.length);
-  return newBuffer.toString('base64', 0, PACKET_HEADER_SIZE + strBufLength);
+  let newBuffer = Buffer.concat([myBuffer, strBuf], PACKET_HEADER_SIZE + strBuf.length)
+  return newBuffer.toString('base64', 0, PACKET_HEADER_SIZE + strBufLength)
 }
 
 function mxrDecoder (str) {
@@ -126,6 +127,10 @@ function mxrDecoder (str) {
   }
 
   return retBuf.toString()
+}
+
+function getBookPath (bookGuid, callback) {
+  mobileUtil.getBookPath(bookGuid, callback)
 }
 
 module.exports = mxrUtil
