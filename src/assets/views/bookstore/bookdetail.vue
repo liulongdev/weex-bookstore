@@ -26,17 +26,8 @@ export default {
   },
   created: function () {
     const url = weex.config.bundleUrl;
-    let queryJson = {}
-    const index = url.indexOf("?");
-    if (index != -1) {
-        const str = url.substr(index + 1);
-        if (str.length > 0) {
-          const strs = str.split("&");
-          for(var i = 0; i < strs.length; i ++) {
-            queryJson[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
-          }
-        }
-    }
+    let queryJson = MxrUtil.parseUrlParam(url)
+
     this.bookGuid = queryJson['bookGuid']
     const getBookDetailApi = '/book/detail/' + this.bookGuid
     console.log('>>>> bookdetail page : ', getBookDetailApi)

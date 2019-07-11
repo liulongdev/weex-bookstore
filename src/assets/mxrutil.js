@@ -10,7 +10,8 @@ let mxrUtil = {
   isAndroid: isAndroid,
   isWeb: isWeb,
   getBookPath: getBookPath,
-  weexLocation: 'http://liulong.site/weex'
+  weexLocation: 'http://liulong.site/weex',
+  parseUrlParam: parseUrlParam
 }
 
 function platform () {
@@ -132,6 +133,21 @@ function mxrDecoder (str) {
 
 function getBookPath (bookGuid, callback) {
   mobileUtil.getBookPath(bookGuid, callback)
+}
+
+function parseUrlParam (url) {
+  let queryJson = {}
+  const index = url.indexOf("?")
+    if (index != -1) {
+        const str = url.substr(index + 1)
+        if (str.length > 0) {
+          const strs = str.split("&")
+          for(var i = 0; i < strs.length; i ++) {
+            queryJson[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1])
+          }
+        }
+    }
+    return queryJson
 }
 
 module.exports = mxrUtil

@@ -48,17 +48,7 @@ export default {
   },
   created: function () {
     const url = weex.config.bundleUrl;
-    let queryJson = {}
-    const index = url.indexOf("?");
-    if (index != -1) {
-        const str = url.substr(index + 1);
-        if (str.length > 0) {
-          const strs = str.split("&");
-          for(var i = 0; i < strs.length; i ++) {
-            queryJson[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
-          }
-        }
-    }
+    let queryJson = MxrUtil.parseUrlParam(url)
     this.recommendId = queryJson['recommendId']
     const api = '/core/home/recommend/' + this.recommendId + '/books'
     const param = {page: 1, rows: 50, recommendId: this.recommendId}

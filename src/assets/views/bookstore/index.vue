@@ -25,11 +25,11 @@
           <div class="floorView" v-if="floor.type === 4">
             <div v-if="floor.items.length >= 2">
               <div class="twoTopicView">
-                <div class="oneTopicView">
+                <div class="oneTopicView"  @click="goSubjuectPage(floor.items[0].itemId)">
                   <image class="towTopicImage" resize="stretch" :src="floor.items[0].itemIcon"></image>
                   <text class="topicTitleLabel">{{floor.items[0].itemName}}</text>
                 </div>
-                <div class="oneTopicView secondTopicView">
+                <div class="oneTopicView secondTopicView" @click="goSubjuectPage(floor.items[1].itemId)">
                   <image class="towTopicImage" resize="stretch" :src="floor.items[1].itemIcon"></image>
                   <text class="topicTitleLabel">{{floor.items[1].itemName}}</text>
                 </div>
