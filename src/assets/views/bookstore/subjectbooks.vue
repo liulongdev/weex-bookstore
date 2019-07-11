@@ -76,7 +76,7 @@ export default {
     goBookDetailPage: function (bookGuid) {
       console.log('>>>>> click book bookGuid: ', bookGuid)
       navigator.push({
-        url: `http://192.168.31.233:8081/dist/views/bookstore/bookdetail.js?bookGuid=${bookGuid}`,
+        url: `${MxrUtil.weexLocation}/views/bookstore/bookdetail.js?bookGuid=${bookGuid}`,
         animated: 'true'
       }, event => {
         console.log('>>> push bookdetail callback ', event)

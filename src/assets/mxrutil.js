@@ -9,7 +9,8 @@ let mxrUtil = {
   isIOS: isIOS,
   isAndroid: isAndroid,
   isWeb: isWeb,
-  getBookPath: getBookPath
+  getBookPath: getBookPath,
+  weexLocation: 'http://liulong.site/weex'
 }
 
 function platform () {
