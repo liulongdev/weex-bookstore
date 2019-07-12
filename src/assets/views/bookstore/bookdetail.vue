@@ -32,16 +32,13 @@ export default {
     const getBookDetailApi = '/book/detail/' + this.bookGuid
     console.log('>>>> bookdetail page : ', getBookDetailApi)
     MxrUtil.get(getBookDetailApi, {}, (res) => {
-      if (res.data.isSuccess) {
+      if (res.ok) {
         this.bookDetailM = res.data.Body
         MxrUtil.getBookPath(this.bookGuid, (path) => {
           this.bookIconPath = path + '/bookIcon.png'
           console.log('>>>> bookicon path : ', this.bookIconPath)
         })
         console.log('>>>>> page data', JSON.stringify(res.data.Body))
-      }
-      if (MxrUtil.isWeb()) {
-        this.bookDetailM = JSON.parse(MxrUtil.mxrDecoder(res.data.Body))
       }
     })
   },

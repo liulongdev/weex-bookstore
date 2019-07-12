@@ -1,5 +1,5 @@
 const stream = weex.requireModule('stream')
-const mobileUtil = weex.requireModule('mxrutil')
+const mobileUtil = weex.requireModule('mxrutil') // 实现了加解密操作
 let mxrUtil = {
   get: get,
   post: post,
@@ -10,7 +10,8 @@ let mxrUtil = {
   isAndroid: isAndroid,
   isWeb: isWeb,
   getBookPath: getBookPath,
-  weexLocation: 'http://liulong.site/weex',
+  weexLocation: 'http://liulong.site/weex', // js所在的服务器地址
+  mxrTransfromApi: 'http://liulong.site/api/mxr/core/weex', // 转换梦想人的服务
   parseUrlParam: parseUrlParam
 }
 
@@ -23,7 +24,9 @@ function isIOS () {
 }
 
 function isAndroid () {
-  return weex.config.env.platform === 'Android'
+  return weex.config.env.platform.toLowerCase() === 'android'
+  // 有问题
+  // return weex.config.env.platform === 'Android'
 }
 
 function isWeb () {
@@ -31,9 +34,10 @@ function isWeb () {
 }
 
 function get (api, param, callback) {
-  if (isIOS()) {
+  const mxrHost = 'https://bs-api.mxrcorp.cn'
+  if (weex.supports('@module/mxrutil')) {
     let option = {
-      'url': 'https://bs-api.mxrcorp.cn' + api,
+      'url': mxrHost + api,
       'method': 'get'
     }
     if (param) {
@@ -41,26 +45,63 @@ function get (api, param, callback) {
     }
     return mobileUtil.fetch(option, callback)
   }
+  if (isIOS() || isAndroid()) {
+    let weexUrl = mxrUtil.mxrTransfromApi
+    if (param === undefined || param === null) {
+      param = {'mxrUrl': mxrHost + api}
+    } else {
+      param['mxrUrl'] = mxrHost + api
+    }
+    if (param !== undefined || param !== null) {
+      weexUrl = weexUrl + '?'
+      for (let key in param) {
+        weexUrl = weexUrl + key + '=' + param[key] + '&'
+      }
+    }
+    let headerJson = {userId: '0', osType: '1', appVersion: '5.30.0', deviceId: '', region: '0', appId: '10000000000000000000000000000001', deviceUnique: '5F3E6EB4-CA01-42B0-BD77-0E72DA409618'}
+    const headerJsonStr = JSON.stringify(headerJson)
+    return stream.fetch({
+      method: 'GET',
+      type: 'json',
+      headers: {'mxr-key': headerJsonStr},
+      url: weexUrl
+    }, callback)
+  }
+  // web
   if (param !== undefined || param !== null) {
     api = api + '?'
     for (let key in param) {
       api = api + key + '=' + param[key] + '&'
     }
   }
-  // neet to do
-  let headers = 'aLIAAAAmTxwcEB94HU9XT1lPWX8gHjkAGRBvR19cb2VvLB0BK0hfXlZaW59nj5qbnJ2bYX+Rb63Sw9be2oSpb5dvb4V/n4qSlpqbX2dPXU9FT46hobSpb0dvXlFRXV1ZWV1dQUEdHRkZHR0RER0dGRkdHWFhHR0ZGRxvFR8pKtMmLiIswxQeHBJPZ19qa1hsU2BvbWJOTlleWEFPP11iT01SVERBaGSfbWxhkWabnpGPKA=='
+  let headerJson = {userId: '0', osType: '1', appVersion: '5.30.0', deviceId: '', region: '0', appId: '10000000000000000000000000000001', deviceUnique: '5F3E6EB4-CA01-42B0-BD77-0E72DA409618'}
+  const headerJsonEncoderStr = mxrEncoder(JSON.stringify(headerJson))
   return stream.fetch({
     method: 'GET',
     type: 'json',
-    headers: {'mxr-key': headers},
-    url: 'https://bs-api.mxrcorp.cn' + api
-  }, callback)
+    headers: {'mxr-key': headerJsonEncoderStr},
+    url: mxrHost + api
+  }, (res) => {
+    if (res.ok) {
+      res.data.Body = mxrDecoder(res.data.Body)
+      try {
+        res.data.Body = JSON.parse(res.data.Body)
+      } catch (e) {
+        console.log('>>> parse json error :', e)
+      } finally {
+        if (callback) {
+          callback(res)
+        }
+      }
+    }
+  })
 }
 
 function post (api, param, callback) {
-  if (isIOS()) {
+  const mxrHost = 'https://bs-api.mxrcorp.cn'
+  if (weex.supports('mxrutil')) {
     let option = {
-      'url': 'https://bs-api.mxrcorp.cn' + api,
+      'url': mxrHost + api,
       'method': 'post'
     }
     if (param) {
@@ -73,19 +114,44 @@ function post (api, param, callback) {
     return stream.fetch({
       method: 'POST',
       type: 'json',
-      url: 'https://bs-api.mxrcorp.cn' + api,
+      url: mxrHost + api,
       body: httpBody
     }, callback)
   }
-  // neet to do
+  if (isIOS() || isAndroid()) {
+    let weexUrl = mxrUtil.mxrTransfromApi
+    let headerJson = {userId: '0', osType: '1', appVersion: '5.30.0', deviceId: '', region: '0', appId: '10000000000000000000000000000001', deviceUnique: '5F3E6EB4-CA01-42B0-BD77-0E72DA409618'}
+    const headerJsonStr = JSON.stringify(headerJson)
+    let httpBody = JSON.stringify(param)
+    return stream.fetch({
+      method: 'POST',
+      type: 'json',
+      header: {'mxr-key': headerJsonStr},
+      body: httpBody,
+      url: weexUrl
+    }, callback)
+  }
+  // web
   let headers = 'aLIAAAAmTxwcEB94HU9XT1lPWX8gHjkAGRBvR19cb2VvLB0BK0hfXlZaW59nj5qbnJ2bYX+Rb63Sw9be2oSpb5dvb4V/n4qSlpqbX2dPXU9FT46hobSpb0dvXlFRXV1ZWV1dQUEdHRkZHR0RER0dGRkdHWFhHR0ZGRxvFR8pKtMmLiIswxQeHBJPZ19qa1hsU2BvbWJOTlleWEFPP11iT01SVERBaGSfbWxhkWabnpGPKA=='
   return stream.fetch({
     method: 'POST',
     type: 'json',
     header: {'mxr-key': headers},
-    url: 'https://bs-api.mxrcorp.cn' + api
-    // url: 'http://10.242.69.181:8089/yanxuan/' + api
-  }, callback)
+    url: mxrHost + api
+  }, (res) => {
+    if (res.ok) {
+      res.data.Body = mxrDecoder(res.data.Body)
+      try {
+        res.data.Body = JSON.parse(res.data.Body)
+      } catch (e) {
+        console.log('>>> parse json error :', e)
+      } finally {
+        if (callback) {
+          callback(res)
+        }
+      }
+    }
+  })
 }
 
 function mxrEncoder (str) {
@@ -137,17 +203,17 @@ function getBookPath (bookGuid, callback) {
 
 function parseUrlParam (url) {
   let queryJson = {}
-  const index = url.indexOf("?")
-    if (index != -1) {
-        const str = url.substr(index + 1)
-        if (str.length > 0) {
-          const strs = str.split("&")
-          for(var i = 0; i < strs.length; i ++) {
-            queryJson[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1])
-          }
-        }
+  const index = url.indexOf('?')
+  if (index !== -1) {
+    const str = url.substr(index + 1)
+    if (str.length > 0) {
+      const strs = str.split('&')
+      for (var i = 0; i < strs.length; i++) {
+        queryJson[strs[i].split('=')[0]] = unescape(strs[i].split('=')[1])
+      }
     }
-    return queryJson
+  }
+  return queryJson
 }
 
 module.exports = mxrUtil

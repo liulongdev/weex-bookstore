@@ -27,13 +27,7 @@ export default {
     this.resourceNo = queryJson['resourceNo']
     this.videoUrl = queryJson['videoUrl']
     MxrUtil.get('/course/videoCourses/video/detail', {courseId: this.courseId, resourceNo: this.resourceNo}, (res) => {
-      if (res.data.isSuccess) {
-        this.aliVideoUrl = res.data.Body && res.data.Body.videoUrl
-      } else {
-        this.aliVideoUrl = this.videoUrl
-      }
-      if (MxrUtil.isWeb()) {
-        // console.log(JSON.parse(MxrUtil.mxrDecoder(res.data.Body)))
+      if (res.ok) {
         this.aliVideoUrl = res.data.Body && res.data.Body.videoUrl
       }
     })

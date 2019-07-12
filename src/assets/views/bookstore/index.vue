@@ -65,15 +65,8 @@ export default {
   created: function () {
     // 获取首页banner数据
     MxrUtil.get('/core/banner/template/1', {}, (res) => {
-      // console.log('>>> respons : ', JSON.stringify(res));
-      if (res.data.isSuccess) {
+      if (res.ok) {
         this.bannerArray = res.data.Body
-        console.log(JSON.stringify(res.data.Body))
-      }
-      if (MxrUtil.isWeb()) {
-        console.log(JSON.parse(MxrUtil.mxrDecoder(res.data.Body)))
-        this.bannerArray = JSON.parse(MxrUtil.mxrDecoder(res.data.Body))
-        // console.log(MxrUtil.mxrDecoder(res.data.Body))
       }
     })
 
@@ -85,16 +78,10 @@ export default {
       topNums: '20',
       region: '0',
       uid: '0',
-      deviceId: 'sdfavasdfsdfasd'
+      deviceId: '5F3E6EB4-CA01-42B0-BD77-0E72DA409618'
     }, (res) => {
-      if (res.data.isSuccess) {
+      if (res.ok) {
         this.dataArray = res.data.Body.list
-        // console.log('>>>>> page data', JSON.stringify(res.data.Body))
-      }
-      if (MxrUtil.isWeb()) {
-        console.log(JSON.parse(MxrUtil.mxrDecoder(res.data.Body)))
-        this.dataArray = JSON.parse(MxrUtil.mxrDecoder(res.data.Body)).list
-        console.log(this.dataArray)
       }
     })
   },

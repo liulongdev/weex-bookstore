@@ -53,11 +53,8 @@ export default {
     const api = '/core/home/recommend/' + this.recommendId + '/books'
     const param = {page: 1, rows: 50, recommendId: this.recommendId}
     MxrUtil.get(api, param, res => {
-      if (res.data.isSuccess) {
+      if (res.ok) {
         this.books = res.data.Body.list
-      }
-      if (MxrUtil.isWeb()) {
-        this.books = JSON.parse(MxrUtil.mxrDecoder(res.data.Body)).list
       }
     })
     console.log('>>>>> recommendId : ',this.recommendId)

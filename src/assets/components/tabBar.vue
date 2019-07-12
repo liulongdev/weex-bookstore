@@ -11,15 +11,15 @@
       <text class="bar-ic iconfont" :class="[this.isActive('bookstore')]">&#xe660;</text>
       <text class="bar-txt" :class="[this.isActive('bookstore')]">书城</text>
     </div>
-    <div class="bar-item" @click="tabTo('bookdetail')">
+    <!-- <div class="bar-item" @click="tabTo('bookdetail')">
       <text class="bar-ic iconfont" :class="[this.isActive('bookdetail')]">&#xe660;</text>
       <text class="bar-txt" :class="[this.isActive('bookdetail')]">图书</text>
-    </div>
+    </div> -->
     <div class="bar-item" @click="tabTo('classroom')">
       <text class="bar-ic iconfont" :class="[this.pIndexKey == 'classroom'?'bar-active':'']">&#xe744;</text>
       <text class="bar-txt" :class="[this.isActive('classroom')]">课堂</text>
       <!-- test  -->
-    <text class="notice-dot">2</text>
+    <!-- <text class="notice-dot">2</text> -->
     </div>
   </div>
 </template>

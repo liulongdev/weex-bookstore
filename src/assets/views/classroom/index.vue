@@ -28,23 +28,14 @@ export default {
   created: function () {
     // 获取banner数据
     MxrUtil.get('/course/banners', {}, (res) => {
-      if (res.data.isSuccess) {
+      if (res.ok) {
         this.bannerArray = res.data.Body
-      }
-      if (MxrUtil.isWeb()) {
-        // console.log(JSON.parse(MxrUtil.mxrDecoder(res.data.Body)))
-        this.videoArray = JSON.parse(MxrUtil.mxrDecoder(res.data.Body))
       }
     })
     // 获取视频数据数据
     MxrUtil.get('/course/videoCourses', {courseType: 0, gradeType: 0, pageNo: 1, pageSize: 1000}, (res) => {
-      // console.log('>>> respons : ', JSON.stringify(res));
-      if (res.data.isSuccess) {
+      if (res.ok) {
         this.videoArray = res.data.Body && res.data.Body.list
-      }
-      if (MxrUtil.isWeb()) {
-        // console.log(JSON.parse(MxrUtil.mxrDecoder(res.data.Body)))
-        this.videoArray = JSON.parse(MxrUtil.mxrDecoder(res.data.Body && res.data.Body.list))
       }
     })
   },
@@ -104,6 +95,7 @@ export default {
   .videoNameLable {
     font-size: 30px;
     color: #666;
+    width: 320px;
     lines: 1;
   } 
 </style>

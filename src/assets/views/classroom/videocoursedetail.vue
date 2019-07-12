@@ -5,9 +5,9 @@
       <text class="coursetext">{{videoModel.courseDesc}}</text>
     </div>
     <list class="list" show-scrollbar="false">
-      <cell v-for="video in videoList" @click="goVideoPlay(video.resourceNo)">
+      <cell v-for="videoItem in videoList" @click="goVideoPlay(videoItem.resourceNo)">
         <div class="celldiv">
-          <text>{{video.videoName}}</text>
+          <text>{{videoItem.videoName}}</text>
         </div>
       </cell>
     </list>
@@ -31,13 +31,9 @@ export default {
     let queryJson = MxrUtil.parseUrlParam(url)
     this.courseId = queryJson['courseId']
     MxrUtil.get('/course/videoCourses/' + this.courseId, {courseId: this.courseId}, (res) => {
-      if (res.data.isSuccess) {
+      if (res.ok) {
         this.videoModel = res.data.Body
         this.videoList = res.data.Body && res.data.Body.videoList
-      }
-      if (MxrUtil.isWeb()) {
-        // console.log(JSON.parse(MxrUtil.mxrDecoder(res.data.Body)))
-        this.videoList = JSON.parse(MxrUtil.mxrDecoder(res.data.Body && res.data.Body.videoList))
       }
     })
   },
