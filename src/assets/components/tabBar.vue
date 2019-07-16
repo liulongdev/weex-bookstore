@@ -21,6 +21,16 @@
       <!-- test  -->
     <!-- <text class="notice-dot">2</text> -->
     </div>
+    <div class="bar-item" @click="tabTo('dreamcircle')">
+      <text class="bar-ic iconfont" :class="[this.isActive('dreamcircle')]">&#xe744;</text>
+      <text class="bar-txt" :class="[this.isActive('dreamcircle')]">梦想圈</text>
+    </div>
+    <!-- <div class="bar-item" @click="tabTo('my')">
+      <text class="bar-ic iconfont" :class="[this.isActive('my')]">&#xe639;</text>
+      <text class="bar-txt" :class="[this.isActive('my')]">个人</text>
+      <text class="i-notice">2</text>    
+    </div> -->
+    
   </div>
 </template>
 

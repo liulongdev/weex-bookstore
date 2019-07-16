@@ -1,11 +1,17 @@
 <template>
   <div class="wrapper">
     <scroller class="scroller" show-scrollbar="false">
-      <slider class="slider" interval="3000" auto-play="true">
+      <slider class="slider" v-if="hasBanner" interval="3000" auto-play="true">
         <div class="frame" v-for="banner in bannerArray">
           <image class="image" resize="stretch" :src="banner.bannerUrl"></image>
         </div>
       </slider>
+      <div class="mainMenu" v-if="hasMenu">
+        <div v-for="menu in menuArray">
+          <image class="menuImage" :src="menu.image"></image>
+          <text class="menuTitle">{{menu.name}}</text>
+        </div>
+      </div>
       <div class="contentWrapper" v-for="floor in dataArray">
           <!-- 图书列表楼层 -->
           <div class="floorView" v-if="floor.type === 1">
@@ -57,8 +63,11 @@ const navigator = weex.requireModule('navigator')
 export default {
   data () {
     return {
+      hasBanner: false,
       bannerArray: [],
       dataArray: [],
+      hasMenu: false,
+      menuArray: [],
       test: 0
     }
   },
@@ -68,6 +77,15 @@ export default {
       if (res.ok) {
         this.bannerArray = res.data.Body
       }
+      this.hasBanner = this.bannerArray.length > 0
+    })
+
+    // 获取首页主要菜单数据
+    MxrUtil.get('/core/homepage/navigator/list', {}, (res) => {
+      if (res.ok) {
+        this.menuArray = res.data.Body;
+      }
+      this.hasMenu = this.menuArray.length > 0
     })
 
     // 获取首页数据
@@ -136,9 +154,27 @@ export default {
     height: 300px;
     position: relative;
   }
+  /* 主要菜单 */
+  .mainMenu {
+    margin-top: 20px;
+    height: 150px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .menuImage {
+    width: 100px;
+    height: 100px;
+  }
+  .menuTitle {
+    margin-top: 8px;
+    width: 100px;
+    text-align: center;
+    font-size: 20px;
+  }
   /* 楼层 */
   .floorView {
-    margin-top: 40px;
+    margin-top: 20px;
   }
   .floorTitleLabel {
     margin-bottom: 10px;
