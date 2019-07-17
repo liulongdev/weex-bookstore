@@ -1,6 +1,10 @@
 <template>
   <div class="wrapper">
     <scroller class="scroller" show-scrollbar="false">
+      <refresh class="refresh" @refresh="onrefresh" :display="refreshing ? 'show' : 'hide'">
+        <text class="indicator-text">Refreshing ...</text>
+        <loading-indicator class="indicator"></loading-indicator>
+      </refresh>
       <div v-for="model in dataArray" class="item">
         <div class="userInfo row">
           <image class="userImage" :src="model.userLogo"></image>
@@ -33,6 +37,10 @@
         <div class="bottomLine"></div>
         <!-- <text>{{JSON.stringify(model)}}</text> -->
       </div>
+      <loading class="loading" @loading="onloading" :display="loadinging ? 'show' : 'hide'">
+        <text class="indicator-text">Loading ...</text>
+        <loading-indicator class="indicator"></loading-indicator>
+      </loading>
     </scroller>
 </div>
 </template>
@@ -43,28 +51,66 @@ const navigator = weex.requireModule('navigator')
 export default {
   data () {
     return {
-      dataArray: []
+      dataArray: [],
+      loadinging: false,
+      page: 1,
+      rows: 30,
+      hasMoreData: true,
+      refreshing: false
     }
   },
   created: function () {
-     let param = {uid: 'CgbNAwAx', page: '1', rows: 30}
-    MxrUtil.get('/community/dynamics', param, (res) => {
-      if(res.ok) {
-        this.dataArray = res.data.Body.list;
-        for (let model of this.dataArray) {
-          if (model.contentPic && model.contentPic.length > 0) {
-            model.contentPicArray = model.contentPic.split(",");
-          } else {
-            model.contentPicArray = [];
-          }
-        }
-      }
-    })
+    this.loadDreamCircleData()
   },
   methods: {
     formatDate (timeinterval) {
       let date = new Date(timeinterval)
       return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDay() + ' ' + date.getHours() + ':' + date.getMinutes()
+    },
+    onloading (event) {
+        this.loadinging = true
+        if (this.hasMoreData) {
+          this.loadDreamCircleData()
+        }
+    },
+    onrefresh (event) {
+      this.refreshing = true
+      this.page = 1
+      this.loadDreamCircleData()
+    },
+    loadDreamCircleData () {
+      let param = {uid: 'CgbNAwAx', page: this.page, rows: this.rows}
+      MxrUtil.get('/community/dynamics', param, (res) => {
+        this.loadinging = false
+        this.refreshing = false
+        if(res.ok) {
+          let array = res.data.Body.list
+          for (let model of array) {
+            if (model.contentPic && model.contentPic.length > 0) {
+              model.contentPicArray = model.contentPic.split(",")
+            } else {
+              model.contentPicArray = []
+            }
+          }
+          if (this.page === 1) {
+            this.dataArray = array
+          } else {
+            let tempArray = this.dataArray
+            for (let m of array) {
+              tempArray.push(m)
+            }
+            this.dataArray = tempArray
+          }
+          
+          if (array.length >= this.rows) {
+            this.hasMoreData = true
+            this.page ++
+          } else {
+            this.hasMoreData = false
+          }
+          this.hasMoreData = array.length >= this.rows
+        }
+      })
     }
   }
 }
@@ -143,5 +189,36 @@ export default {
     /* margin-right: 20px; */
     height: 1px;
     background-color: #e0e0e0;
+  }
+  .loading {
+    width: 750;
+    display: -ms-flex;
+    display: -webkit-flex;
+    display: flex;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    -webkit-box-align: center;
+    align-items: center;
+  }
+  .indicator-text {
+    color: #888888;
+    font-size: 42px;
+    text-align: center;
+  }
+  .indicator {
+    margin-top: 16px;
+    height: 40px;
+    width: 40px;
+    color: blue;
+  }
+  .refresh {
+    width: 750;
+    display: -ms-flex;
+    display: -webkit-flex;
+    display: flex;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    -webkit-box-align: center;
+    align-items: center;
   }
 </style>
