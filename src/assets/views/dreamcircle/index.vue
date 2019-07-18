@@ -65,7 +65,7 @@ export default {
   methods: {
     formatDate (timeinterval) {
       let date = new Date(timeinterval)
-      return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDay() + ' ' + date.getHours() + ':' + date.getMinutes()
+      return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes()
     },
     onloading (event) {
         this.loadinging = true
