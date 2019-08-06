@@ -6460,6 +6460,24 @@ module.exports = {
     "color": "#666666",
     "lines": 1
   },
+  "thirdItemContainer": {
+    "flexDirection": "row",
+    "justifyContent": "space-between"
+  },
+  "thirdItemCell": {
+    "width": "220"
+  },
+  "thirdImg": {
+    "width": "220",
+    "height": "180",
+    "borderRadius": "8"
+  },
+  "thirdTitleLabel": {
+    "marginTop": "6",
+    "fontSize": "24",
+    "color": "#666666",
+    "lines": 1
+  },
   "tagScrollView": {
     "flexDirection": "row"
   },
@@ -6494,6 +6512,16 @@ var _mxrutil2 = _interopRequireDefault(_mxrutil);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -23840,7 +23868,29 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }), _c('text', {
       staticClass: ["topicTitleLabel"]
-    }, [_vm._v(_vm._s(floor.items[1].itemName))])])])]) : _vm._e()]) : _vm._e(), (floor.type === 6) ? _c('div', {
+    }, [_vm._v(_vm._s(floor.items[1].itemName))])])])]) : _vm._e()]) : _vm._e(), (floor.type === 5 && floor.items.length == 3) ? _c('div', {
+      staticClass: ["floorView"]
+    }, [_c('text', {
+      staticClass: ["floorTitleLabel"]
+    }, [_vm._v(_vm._s(floor.moduleName))]), _c('div', {
+      staticClass: ["thirdItemContainer"]
+    }, _vm._l((floor.items), function(item, iIdx) {
+      return _c('div', {
+        key: iIdx,
+        staticClass: ["thirdItemCell"],
+        on: {
+          "click": function($event) {
+            _vm.goSubjuectPage(item.itemId)
+          }
+        }
+      }, [_c('image', {
+        staticClass: ["thirdImg"],
+        attrs: {
+          "resize": "stretch",
+          "src": item.itemIcon
+        }
+      })])
+    }))]) : _vm._e(), (floor.type === 6) ? _c('div', {
       staticClass: ["floorView"]
     }, [_c('scroller', {
       staticClass: ["tagScrollView"],

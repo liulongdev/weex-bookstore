@@ -41,6 +41,16 @@
           </div>
         </div>
       </div>
+      <!--专区楼层 UI竖着排列-->
+      <div class="floorView" v-if="floor.type === 5 && floor.items.length == 3" >
+        <text class="floorTitleLabel">{{floor.moduleName}}</text>
+        <div class="thirdItemContainer">
+          <div class="thirdItemCell" v-bind:key="iIdx" v-for="(item, iIdx) in floor.items" @click="goSubjuectPage(item.itemId)">
+            <image class="thirdImg" resize="stretch" :src="item.itemIcon"></image>
+            <!--<text class="thirdTitleLabel">{{item.itemName}}</text>-->
+          </div>
+        </div>
+      </div>
       <!-- 标签列表楼层 -->
       <div class="floorView" v-if="floor.type === 6">
         <scroller class="tagScrollView" show-scrollbar="false" scroll-direction="horizontal">
@@ -227,6 +237,25 @@ export default {
   .topicTitleLabel {
     margin-top: 10px;
     font-size: 30px;
+    color: #666;
+    lines: 1;
+  }
+  /* 三个专区 */
+  .thirdItemContainer {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .thirdItemCell {
+    width: 220px;
+  }
+  .thirdImg {
+    width: 220px;
+    height: 180px;
+    border-radius: 8px;
+  }
+  .thirdTitleLabel {
+    margin-top: 6px;
+    font-size: 24px;
     color: #666;
     lines: 1;
   }
