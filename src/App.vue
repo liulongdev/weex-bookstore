@@ -1,7 +1,8 @@
 <template>
   <div class="app-wrapper">
-    <router-view class="r-box"></router-view>
-    <tab-bar @tabTo="onTabTo"></tab-bar>
+    <!--<router-view class="r-box"></router-view>-->
+    <!--<tab-bar @tabTo="onTabTo"></tab-bar>-->
+    <main-tab-page></main-tab-page>
   </div>
 </template>
 
@@ -18,18 +19,11 @@
   .app-wrapper{
     background-color: #f4f4f4;
   }
-  .r-box{
-    position: absolute;
-    top:0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
 </style>
 
 <script>
 import util from './assets/util.js'
-import tabBar from './assets/components/tabBar.vue'
+import MainTabPage from './view/MainTabPage.vue'
 // const modal = weex.requireModule('modal')
 export default {
   data () {
@@ -37,16 +31,10 @@ export default {
     }
   },
   components: {
-    'tab-bar': tabBar
+    MainTabPage
   },
   created () {
     util.initIconFont()
-  },
-  methods: {
-    onTabTo (_result) {
-      let _key = _result.data.key || ''
-      this.$router && this.$router.push('/' + _key)
-    }
   }
 }
 </script>
