@@ -132,7 +132,7 @@ export default {
     width: 750px;
     /*justify-content: center;*/
     /* align-items: center; */
-    margin-bottom: 90px;
+    margin-bottom: 120px;
   }
   .scroller {
     padding-left: 30px;

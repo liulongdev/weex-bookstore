@@ -67,7 +67,7 @@ export default {
     padding-left: 20px;
     padding-right: 20px;
     /*align-items: center;*/
-    margin-bottom: 90px;
+    margin-bottom: 120px;
   }
   /* slider */
   .bannerImg {

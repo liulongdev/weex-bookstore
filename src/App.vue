@@ -3,6 +3,7 @@
     <!--<router-view class="r-box"></router-view>-->
     <!--<tab-bar @tabTo="onTabTo"></tab-bar>-->
     <main-tab-page></main-tab-page>
+<!--    <search-page></search-page>-->
   </div>
 </template>
 
@@ -24,14 +25,15 @@
 <script>
 import util from './assets/util.js'
 import MainTabPage from './view/MainTabPage.vue'
-// const modal = weex.requireModule('modal')
+import SearchPage from './view/SearchPage.vue'
 export default {
   data () {
     return {
     }
   },
   components: {
-    MainTabPage
+    MainTabPage,
+    SearchPage
   },
   created () {
     util.initIconFont()

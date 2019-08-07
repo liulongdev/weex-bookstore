@@ -1,77 +1,88 @@
 <template>
-  <scroller class="wrapper scroller" show-scrollbar="false">
-    <slider class="slider" v-if="hasBanner" interval="3000" auto-play="true">
-      <div class="frame" v-bind:key="bIdx" v-for="(banner, bIdx) in bannerArray">
-        <image class="image" resize="stretch" :src="banner.bannerUrl"></image>
+  <scroller class="scroller" show-scrollbar="false">
+    <wxc-searchbar disabled="true"
+                   placeholder="搜索"
+                   @wxcSearchbarInputDisabledClicked="wxcSearchbarInputDisabledClicked"></wxc-searchbar>
+    <div class="wrapper">
+      <slider class="slider" v-if="hasBanner" interval="3000" auto-play="true">
+        <div class="frame" v-bind:key="bIdx" v-for="(banner, bIdx) in bannerArray">
+          <image class="image" resize="stretch" :src="banner.bannerUrl"></image>
+        </div>
+      </slider>
+      <div class="mainMenu" v-if="hasMenu">
+        <div v-bind:key="mIdx" v-if="mIdx < 5" v-for="(menu, mIdx) in menuArray">
+          <image class="menuImage" :src="menu.image"></image>
+          <text class="menuTitle">{{menu.name}}</text>
+        </div>
       </div>
-    </slider>
-    <div class="mainMenu" v-if="hasMenu">
-      <div v-bind:key="mIdx" v-for="(menu, mIdx) in menuArray">
-        <image class="menuImage" :src="menu.image"></image>
-        <text class="menuTitle">{{menu.name}}</text>
+      <div class="mainMenu" v-if="menuArray.length >= 5">
+        <div v-bind:key="mIdx" v-if="mIdx >= 5" v-for="(menu, mIdx) in menuArray">
+          <image class="menuImage" :src="menu.image"></image>
+          <text class="menuTitle">{{menu.name}}</text>
+        </div>
       </div>
-    </div>
-    <div class="contentWrapper" v-bind:key="fIdx" v-for="(floor, fIdx) in dataArray">
-      <!-- 图书列表楼层 -->
-      <div class="floorView" v-if="floor.type === 1">
-        <scroller class="bookListScroller" show-scrollbar="false" scroll-direction="horizontal">
-          <div class="bookView" v-bind:key="iIdx" v-for="(item, iIdx) in floor.items" @click="goBookDetailPage(item.itemId)">
-            <image class="bookImage" resize="stretch" :src="item.itemIcon"></image>
-            <text class="bookNameLabel">{{item.itemName}}</text>
-          </div>
-        </scroller>
-      </div>
-      <!-- 专区楼层 -->
-      <div @click="goSubjuectPage(floor.items[0].itemId)" class="floorView" v-if="floor.type === 3 && floor.items.length > 0">
-        <text class="floorTitleLabel">{{floor.moduleName}}</text>
-        <image class="image" resize="stretch" :src="floor.items[0].itemIcon"></image>
-      </div>
-      <!-- 两个专区楼层 -->
-      <div class="floorView" v-if="floor.type === 4">
-        <div v-if="floor.items.length >= 2">
-          <div class="twoTopicView">
-            <div class="oneTopicView"  @click="goSubjuectPage(floor.items[0].itemId)">
-              <image class="towTopicImage" resize="stretch" :src="floor.items[0].itemIcon"></image>
-              <text class="topicTitleLabel">{{floor.items[0].itemName}}</text>
+      <div class="contentWrapper" v-bind:key="fIdx" v-for="(floor, fIdx) in dataArray">
+        <!-- 图书列表楼层 -->
+        <div class="floorView" v-if="floor.type === 1">
+          <scroller class="bookListScroller" show-scrollbar="false" scroll-direction="horizontal">
+            <div class="bookView" v-bind:key="iIdx" v-for="(item, iIdx) in floor.items" @click="goBookDetailPage(item.itemId)">
+              <image class="bookImage" resize="stretch" :src="item.itemIcon"></image>
+              <text class="bookNameLabel">{{item.itemName}}</text>
             </div>
-            <div class="oneTopicView secondTopicView" @click="goSubjuectPage(floor.items[1].itemId)">
-              <image class="towTopicImage" resize="stretch" :src="floor.items[1].itemIcon"></image>
-              <text class="topicTitleLabel">{{floor.items[1].itemName}}</text>
+          </scroller>
+        </div>
+        <!-- 专区楼层 -->
+        <div @click="goSubjuectPage(floor.items[0].itemId)" class="floorView" v-if="floor.type === 3 && floor.items.length > 0">
+          <text class="floorTitleLabel">{{floor.moduleName}}</text>
+          <image class="image" resize="stretch" :src="floor.items[0].itemIcon"></image>
+        </div>
+        <!-- 两个专区楼层 -->
+        <div class="floorView" v-if="floor.type === 4">
+          <div v-if="floor.items.length >= 2">
+            <div class="twoTopicView">
+              <div class="oneTopicView"  @click="goSubjuectPage(floor.items[0].itemId)">
+                <image class="towTopicImage" resize="stretch" :src="floor.items[0].itemIcon"></image>
+                <text class="topicTitleLabel">{{floor.items[0].itemName}}</text>
+              </div>
+              <div class="oneTopicView secondTopicView" @click="goSubjuectPage(floor.items[1].itemId)">
+                <image class="towTopicImage" resize="stretch" :src="floor.items[1].itemIcon"></image>
+                <text class="topicTitleLabel">{{floor.items[1].itemName}}</text>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <!--专区楼层 UI竖着排列-->
-      <div class="floorView" v-if="floor.type === 5 && floor.items.length == 3" >
-        <text class="floorTitleLabel">{{floor.moduleName}}</text>
-        <div class="thirdItemContainer">
-          <div class="thirdItemCell" v-bind:key="iIdx" v-for="(item, iIdx) in floor.items" @click="goSubjuectPage(item.itemId)">
-            <image class="thirdImg" resize="stretch" :src="item.itemIcon"></image>
-            <!--<text class="thirdTitleLabel">{{item.itemName}}</text>-->
+        <!--专区楼层 UI竖着排列-->
+        <div class="floorView" v-if="floor.type === 5 && floor.items.length == 3" >
+          <text class="floorTitleLabel">{{floor.moduleName}}</text>
+          <div class="thirdItemContainer">
+            <div class="thirdItemCell" v-bind:key="iIdx" v-for="(item, iIdx) in floor.items" @click="goSubjuectPage(item.itemId)">
+              <image class="thirdImg" resize="stretch" :src="item.itemIcon"></image>
+              <!--<text class="thirdTitleLabel">{{item.itemName}}</text>-->
+            </div>
           </div>
         </div>
-      </div>
-      <!-- 标签列表楼层 -->
-      <div class="floorView" v-if="floor.type === 6">
-        <scroller class="tagScrollView" show-scrollbar="false" scroll-direction="horizontal">
-          <div v-bind:key="iIdx" v-for="(item, iIdx) in floor.items">
-            <text class="tagLabel">{{item.itemName}}</text>
-          </div>
-        </scroller>
+        <!-- 标签列表楼层 -->
+        <div class="floorView" v-if="floor.type === 6">
+          <scroller class="tagScrollView" show-scrollbar="false" scroll-direction="horizontal">
+            <div v-bind:key="iIdx" v-for="(item, iIdx) in floor.items">
+              <text class="tagLabel">{{item.itemName}}</text>
+            </div>
+          </scroller>
+        </div>
       </div>
     </div>
     <wxc-loading :show="isLoadingShow"
                  :type="loadingType"
-                 :loading-text="loadingText"></wxc-loading>
+                 ></wxc-loading>
   </scroller>
 </template>
 
 <script>
-import { WxcLoading } from 'weex-ui'
+import { WxcLoading, WxcSearchbar } from 'weex-ui'
 import MxrUtil from '../assets/mxrutil.js'
 const navigator = weex.requireModule('navigator')
 export default {
-  components: { WxcLoading },
+  components: { WxcLoading, WxcSearchbar },
   data () {
     return {
       hasBanner: false,
@@ -96,7 +107,7 @@ export default {
     // 获取首页主要菜单数据
     MxrUtil.get('/core/homepage/navigator/list', {}, (res) => {
       if (res.ok) {
-        this.menuArray = res.data.Body;
+        this.menuArray = res.data.Body
       }
       this.hasMenu = this.menuArray.length > 0
     })
@@ -135,6 +146,17 @@ export default {
       }, event => {
         console.log('>>>>> push subject callback ', event)
       })
+    },
+    goSerachPage: function () {
+      navigator.push({
+        url: `${MxrUtil.weexLocation}/views/SearchPage.js`,
+        animated: 'true'
+      }, event => {
+        console.log('>>>>> push subject callback ', event)
+      })
+    },
+    wxcSearchbarInputDisabledClicked () {
+      this.goSerachPage()
     }
   }
 }
@@ -142,12 +164,13 @@ export default {
 
 <style scoped>
   .wrapper {
+    margin-top: 20px;
     width: 750px;
     padding-left: 20px;
     padding-right: 20px;
     /*justify-content: center;*/
     /* align-items: center; */
-    margin-bottom: 90px;
+    margin-bottom: 120px;
   }
   /* slider */
   .image {
