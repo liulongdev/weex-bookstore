@@ -5,8 +5,8 @@ const MxrUtilModule = weex.requireModule('mxrutil') // 实现了加解密操作
 let mxrUtil = {
   get: get,
   post: post,
-  mxrEncoder: mxrEncoder,
-  mxrDecoder: mxrDecoder,
+  // mxrEncoder: mxrEncoder,
+  // mxrDecoder: mxrDecoder,
   platform: platform,
   isIOS: isIOS,
   isAndroid: isAndroid,
@@ -179,48 +179,48 @@ function post (api, param, callback) {
   })
 }
 
-function mxrEncoder (str) {
-  const PACKET_HEADER_SIZE = 5
-  if (typeof str === 'object') {
-    str = JSON.stringify(str)
-  }
-  let strBuf = Buffer.from(str, 'utf-8')
-  const strBufLength = strBuf.length
-  const random = Math.ceil(Math.random() * 127)
-
-  for (let bufIndex = 0; bufIndex < strBufLength; bufIndex++) {
-    strBuf[bufIndex] = (strBuf[bufIndex] + (bufIndex ^ random)) ^ (random ^ (strBufLength - bufIndex))
-  }
-
-  let myBuffer = Buffer.alloc(PACKET_HEADER_SIZE)
-  myBuffer[0] = random
-  myBuffer[1] = PACKET_HEADER_SIZE + strBufLength
-
-  let newBuffer = Buffer.concat([myBuffer, strBuf], PACKET_HEADER_SIZE + strBuf.length)
-  return newBuffer.toString('base64', 0, PACKET_HEADER_SIZE + strBufLength)
-}
-
-function mxrDecoder (str) {
-  const PACKET_HEADER_SIZE = 5
-  if (typeof str === 'object') {
-    str = JSON.stringify(str)
-  }
-  let buffer = Buffer.from(str, 'base64')
-  const bufferLength = buffer.length
-  if (bufferLength <= PACKET_HEADER_SIZE) {
-    return undefined
-  }
-
-  const random = buffer[0]
-
-  const size = bufferLength - PACKET_HEADER_SIZE
-  let retBuf = Buffer.alloc(size)
-  for (let bufIndex = 0; bufIndex < size; bufIndex++) {
-    retBuf[bufIndex] = (buffer[PACKET_HEADER_SIZE + bufIndex] ^ (random ^ (size - bufIndex))) - (bufIndex ^ random)
-  }
-
-  return retBuf.toString()
-}
+// function mxrEncoder (str) {
+//   const PACKET_HEADER_SIZE = 5
+//   if (typeof str === 'object') {
+//     str = JSON.stringify(str)
+//   }
+//   let strBuf = Buffer.from(str, 'utf-8')
+//   const strBufLength = strBuf.length
+//   const random = Math.ceil(Math.random() * 127)
+//
+//   for (let bufIndex = 0; bufIndex < strBufLength; bufIndex++) {
+//     strBuf[bufIndex] = (strBuf[bufIndex] + (bufIndex ^ random)) ^ (random ^ (strBufLength - bufIndex))
+//   }
+//
+//   let myBuffer = Buffer.alloc(PACKET_HEADER_SIZE)
+//   myBuffer[0] = random
+//   myBuffer[1] = PACKET_HEADER_SIZE + strBufLength
+//
+//   let newBuffer = Buffer.concat([myBuffer, strBuf], PACKET_HEADER_SIZE + strBuf.length)
+//   return newBuffer.toString('base64', 0, PACKET_HEADER_SIZE + strBufLength)
+// }
+//
+// function mxrDecoder (str) {
+//   const PACKET_HEADER_SIZE = 5
+//   if (typeof str === 'object') {
+//     str = JSON.stringify(str)
+//   }
+//   let buffer = Buffer.from(str, 'base64')
+//   const bufferLength = buffer.length
+//   if (bufferLength <= PACKET_HEADER_SIZE) {
+//     return undefined
+//   }
+//
+//   const random = buffer[0]
+//
+//   const size = bufferLength - PACKET_HEADER_SIZE
+//   let retBuf = Buffer.alloc(size)
+//   for (let bufIndex = 0; bufIndex < size; bufIndex++) {
+//     retBuf[bufIndex] = (buffer[PACKET_HEADER_SIZE + bufIndex] ^ (random ^ (size - bufIndex))) - (bufIndex ^ random)
+//   }
+//
+//   return retBuf.toString()
+// }
 
 function getBookPath (bookGuid, callback) {
   MxrUtilModule.getBookPath(bookGuid, callback)

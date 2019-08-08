@@ -87,7 +87,7 @@ export default {
           let array = res.data.Body.list
           for (let model of array) {
             if (model.contentPic && model.contentPic.length > 0) {
-              model.contentPicArray = model.contentPic.split(",")
+              model.contentPicArray = model.contentPic.split(',')
             } else {
               model.contentPicArray = []
             }
@@ -101,10 +101,9 @@ export default {
             }
             this.dataArray = tempArray
           }
-          
           if (array.length >= this.rows) {
             this.hasMoreData = true
-            this.page ++
+            this.page++
           } else {
             this.hasMoreData = false
           }

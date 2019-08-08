@@ -12,14 +12,14 @@
                    placeholder="请输入关键词"
                    theme="yellow"
                    returnKeyType="search"
-                   autofocus="true"
+                   autofocus="autofocus"
     ></wxc-searchbar>
     <div class="wrapper">
       <!--课程-->
       <text v-if="this.courseArray.length > 0" class="sectionTitle">课程</text>
       <div class="cell inline alignItemCenter" v-bind:key="cIdx" v-for="(course, cIdx) in courseArray">
         <image class="courseImage" :src="course.courseImageUrl"></image>
-        <div class="courseInfoContainer">
+        <div class="courseInfoContainer" v-if="course.courseType === 1">
           <text class="courseNameText">{{course.courseName}}</text>
           <wxc-rich-text class="courseRichText"
                          :config-list="getCourseRichText(course)"
@@ -27,6 +27,10 @@
           <wxc-rich-text class="courseReadTimeRichText"
                          :config-list="getCourseReadTimeRichText(course)"
           ></wxc-rich-text>
+        </div>
+        <div class="courseInfoContainer" v-else-if="course.courseType === 2">
+          <text class="courseNameText">{{course.courseName}}</text>
+          <text class="courseDescText">{{course.description}}</text>
         </div>
       </div>
       <!--专区-->
@@ -67,7 +71,8 @@ export default {
       isLoadingShow: false,
       courseArray: [],
       zoneArray: [],
-      bookArray: []
+      bookArray: [],
+      autofocus: true
     }
   },
   methods: {
@@ -218,6 +223,13 @@ export default {
     margin-top: 10px;
   }
   .courseReadTimeRichText {
+    margin-top: 10px;
+  }
+  .courseDescText {
+    font-size: 26px;
+    lines: 2;
+    text-overflow: ellipsis;
+    color: #999999;
     margin-top: 10px;
   }
   .zoneTitleText {

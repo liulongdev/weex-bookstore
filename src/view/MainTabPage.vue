@@ -2,7 +2,8 @@
   <wxc-tab-bar :tab-titles="tabTitles"
                :tab-styles="tabStyles"
                title-type="icon"
-               @wxcTabBarCurrentTabSelected="wxcTabBarCurrentTabSelected">
+               @wxcTabBarCurrentTabSelected="wxcTabBarCurrentTabSelected"
+               isTabView="false">
     <div class="item-container" :style="contentStyle"><home-page></home-page></div>
     <div class="item-container" :style="contentStyle"><class-romm></class-romm></div>
     <div class="item-container" :style="contentStyle"><circle-page></circle-page></div>
@@ -15,16 +16,19 @@
     background-color: #f2f3f4;
     align-items: center;
     justify-content: center;
+    margin-bottom: 120px;
   }
 </style>
 
 <script>
 import { Utils, WxcTabBar } from 'weex-ui'
+import MxrUtil from '../assets/mxrutil.js'
 import TabBar from '../components/widget/TabBar.vue'
 import NavigationBar from '../components/widget/NavigationBar.vue'
 import HomePage from './BookstorePage.vue'
 import CirclePage from './CirclePage.vue'
 import ClassRomm from './ClassRoom.vue'
+const modal = weex.requireModule('modal')
 export default {
   components: { TabBar, WxcTabBar, NavigationBar, CirclePage, HomePage, ClassRomm },
   data: () => ({
@@ -59,7 +63,7 @@ export default {
     mainHeight: 0
   }),
   created () {
-    const tabPageHeight = Utils.env.getPageHeight()
+    const tabPageHeight = Utils.env.getPageHeight() - (MxrUtil.isIOS() ? 86 : 120)
     this.contentStyle = {height: tabPageHeight}
     this.mainHeight = Utils.env.getScreenHeight()
   },

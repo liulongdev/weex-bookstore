@@ -39,6 +39,7 @@
         <!-- 两个专区楼层 -->
         <div class="floorView" v-if="floor.type === 4">
           <div v-if="floor.items.length >= 2">
+            <text class="floorTitleLabel">{{floor.moduleName}}</text>
             <div class="twoTopicView">
               <div class="oneTopicView"  @click="goSubjuectPage(floor.items[0].itemId)">
                 <image class="towTopicImage" resize="stretch" :src="floor.items[0].itemIcon"></image>
@@ -170,7 +171,7 @@ export default {
     padding-right: 20px;
     /*justify-content: center;*/
     /* align-items: center; */
-    margin-bottom: 120px;
+    /*margin-bottom: 90px;*/
   }
   /* slider */
   .image {
