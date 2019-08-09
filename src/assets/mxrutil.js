@@ -155,7 +155,7 @@ function post (api, param, callback) {
   }
   let region = '0' // 0: bookCity, 1: Snaplearn
   let appId = '10000000000000000000000000000001' // 10000000000000000000000000000001: bookCity, 10000000000000000000000000000011: Snaplearn
-  let headerJson = {userId: '0', osType: osType, appVersion: '5.30.0', deviceId: '', region: region, appId: appId, deviceUnique: '5F3E6EB4-CA01-42B0-BD77-0E72DA409618'}
+  let headerJson = {userId: '0', osType: osType, appVersion: '5.35.0', deviceId: '', region: region, appId: appId, deviceUnique: '5F3E6EB4-CA01-42B0-BD77-0E72DA409618'}
   const headerJsonEncoderStr = MXREncription.encryptionMxr(JSON.stringify(headerJson))
   return stream.fetch({
     method: 'POST',

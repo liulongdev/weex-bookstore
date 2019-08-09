@@ -4,6 +4,7 @@
     <!--<tab-bar @tabTo="onTabTo"></tab-bar>-->
     <main-tab-page></main-tab-page>
     <!--<search-page></search-page>-->
+    <!--<book-detail-page></book-detail-page>-->
   </div>
 </template>
 
@@ -26,6 +27,7 @@
 import util from './assets/util.js'
 import MainTabPage from './view/MainTabPage.vue'
 import SearchPage from './view/SearchPage.vue'
+import BookDetailPage from './view/BookDetailPage.vue'
 export default {
   data () {
     return {
@@ -33,7 +35,8 @@ export default {
   },
   components: {
     MainTabPage,
-    SearchPage
+    SearchPage,
+    BookDetailPage
   },
   created () {
     util.initIconFont()
