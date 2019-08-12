@@ -1,59 +1,62 @@
 <template>
-  <scroller v-if="bookDetailM" class="scroller wrapper" show-scrollbar="false" :style="scrollStyle">
-    <div class="topView"></div>
-    <div class="bookInfoView">
-      <div class="bookImageContainer">
-        <image class="bookImage" :src="bookDetailM && bookDetailM.bookCoverURL"></image>
+  <div class="wrapper">
+    <!--<image class="bgImage" :src="bookDetailM && bookDetailM.bookCoverURL" resize="cover" :style="bgStyle"></image>-->
+    <scroller v-if="bookDetailM" class="scroller" show-scrollbar="false" @scroll="onScroll">
+      <div class="bookInfoView">
+        <div style="height: 40px;"></div>
+        <div class="bookImageContainer" :style="bookImageContainerStyle">
+          <image class="bookImage" :src="bookDetailM && bookDetailM.bookCoverURL" :style="bookImageStyle"></image>
+        </div>
+        <text class="vipTag" v-if="bookDetailM && bookDetailM.vipFlag">vip</text>
+        <text class="bookNameText">{{bookDetailM && bookDetailM.bookName}}</text>
+        <text class="createTimeText" style="color: #999999; font-size: 20px;margin-top: 20px;">更新时间：{{bookDetailM.bookUpdateTime}}</text>
+        <div class="simpleInfoView inline">
+          <div class="oneInfoView">
+            <text class="oneInfoText">{{bookDetailM.bookPublisherName}}</text>
+            <text class="oneInfoTitle">发布人</text>
+          </div>
+          <div class="VLine"></div>
+          <div class="oneInfoView">
+            <text class="oneInfoText">{{numberToStr(bookDetailM.bookReadTimes)}}</text>
+            <text class="oneInfoTitle">浏览数</text>
+          </div>
+          <div class="VLine"></div>
+          <div class="oneInfoView">
+            <text class="oneInfoText">{{numberToStr(bookDetailM.bookDownloadTimes)}}</text>
+            <text class="oneInfoTitle">下载数</text>
+          </div>
+        </div>
+        <text @click="toggleShowDescLines" class="bookDescText bookDescLabelShowSome" v-if="isBookDescLabelShowSome">{{bookDetailM && bookDetailM.bookDESC}}</text>
+        <text @click="toggleShowDescLines" class="bookDescText" v-else>{{bookDetailM && bookDetailM.bookDESC}}</text>
       </div>
-      <text class="vipTag" v-if="bookDetailM && bookDetailM.vipFlag">vip</text>
-      <text class="bookNameText">{{bookDetailM && bookDetailM.bookName}}</text>
-      <text class="createTimeText" style="color: #999999; font-size: 20px;margin-top: 20px;">更新时间：{{bookDetailM.bookUpdateTime}}</text>
-      <div class="simpleInfoView inline">
-        <div class="oneInfoView">
-          <text class="oneInfoText">{{bookDetailM.bookPublisherName}}</text>
-          <text class="oneInfoTitle">发布人</text>
-        </div>
-        <div class="VLine"></div>
-        <div class="oneInfoView">
-          <text class="oneInfoText">{{numberToStr(bookDetailM.bookReadTimes)}}</text>
-          <text class="oneInfoTitle">浏览数</text>
-        </div>
-        <div class="VLine"></div>
-        <div class="oneInfoView">
-          <text class="oneInfoText">{{numberToStr(bookDetailM.bookDownloadTimes)}}</text>
-          <text class="oneInfoTitle">下载数</text>
-        </div>
-      </div>
-      <text @click="toggleShowDescLines" class="bookDescText bookDescLabelShowSome" v-if="isBookDescLabelShowSome">{{bookDetailM && bookDetailM.bookDESC}}</text>
-      <text @click="toggleShowDescLines" class="bookDescText" v-else>{{bookDetailM && bookDetailM.bookDESC}}</text>
-    </div>
-    <div class="HLine"></div>
-    <div v-if="bookDetailM.supportModelList && bookDetailM.supportModelList.length > 0" class="supportTypeView inline">
-      <text class="supportTypeTitle">本书支持:</text>
-      <text class="supportTypeText" v-bind:key="sIdx" v-for="(supportModel, sIdx) in bookDetailM.supportModelList">{{supportModel}}</text>
-    </div>
-    <scroller class="bookTagsScroller inline" v-if="bookTags && bookTags.length > 0" scroll-direction="horizontal" show-scrollbar="false">
-      <text class="bookTagText" v-bind:key="bIdx" v-for="(bookTag, bIdx) in bookTags">{{bookTag.name}}</text>
-    </scroller>
-    <div class="zoneListContainer" v-if="zoneArray && zoneArray.length > 0">
       <div class="HLine"></div>
-      <text class="zoneTitleText">所属专区</text>
-      <div class="zoneCell" v-bind:key="zIdx" v-for="(zone, zIdx) in zoneArray" @click="goZonePage(zone.id)">
-        <text class="zoneNameText">{{zone.name}}</text>
-        <image class="zoneImage" :src="zone.cover"></image>
+      <div v-if="bookDetailM.supportModelList && bookDetailM.supportModelList.length > 0" class="supportTypeView inline">
+        <text class="supportTypeTitle">本书支持:</text>
+        <text class="supportTypeText" v-bind:key="sIdx" v-for="(supportModel, sIdx) in bookDetailM.supportModelList">{{supportModel}}</text>
       </div>
-    </div>
-    <div class="recommendBookContainer" v-if="recommendBooks && recommendBooks.length > 0">
-      <div class="HLine"></div>
-      <text class="recommendBookTitleText">相关推荐</text>
-      <scroller class="recommendBookScroller inline" v-if="recommendBooks && recommendBooks.length > 0" scroll-direction="horizontal" show-scrollbar="false">
-        <div class="bookItemView" v-bind:key="bIdx" v-for="(book, bIdx) in recommendBooks" @click="goBookDetailPage(book.bookGUID)">
-          <image class="bookItemImage" :src="book.bookCoverURL"></image>
-          <text class="bookItemNameText">{{book.bookName}}</text>
-        </div>
+      <scroller class="bookTagsScroller inline" v-if="bookTags && bookTags.length > 0" scroll-direction="horizontal" show-scrollbar="false">
+        <text class="bookTagText" v-bind:key="bIdx" v-for="(bookTag, bIdx) in bookTags">{{bookTag.name}}</text>
       </scroller>
-    </div>
-  </scroller>
+      <div class="zoneListContainer" v-if="zoneArray && zoneArray.length > 0">
+        <div class="HLine"></div>
+        <text class="zoneTitleText">所属专区</text>
+        <div class="zoneCell" v-bind:key="zIdx" v-for="(zone, zIdx) in zoneArray" @click="goZonePage(zone.id)">
+          <text class="zoneNameText">{{zone.name}}</text>
+          <image class="zoneImage" :src="zone.cover"></image>
+        </div>
+      </div>
+      <div class="recommendBookContainer" v-if="recommendBooks && recommendBooks.length > 0">
+        <div class="HLine"></div>
+        <text class="recommendBookTitleText">相关推荐</text>
+        <scroller class="recommendBookScroller inline" v-if="recommendBooks && recommendBooks.length > 0" scroll-direction="horizontal" show-scrollbar="false">
+          <div class="bookItemView" v-bind:key="bIdx" v-for="(book, bIdx) in recommendBooks" @click="goBookDetailPage(book.bookGUID)">
+            <image class="bookItemImage" :src="book.bookCoverURL"></image>
+            <text class="bookItemNameText">{{book.bookName}}</text>
+          </div>
+        </scroller>
+      </div>
+    </scroller>
+  </div>
 </template>
 
 <script>
@@ -70,12 +73,13 @@ export default {
       isBookDescLabelShowSome: false,
       recommendBooks: [],
       bookTags: [],
-      scrollStyle: {},
-      zoneArray: []
+      zoneArray: [],
+      bookImageContainerStyle: {},
+      bookImageStyle: {},
+      bgStyle: {}
     }
   },
   created: function () {
-    // this.scrollStyle = {height: MxrUtil.getPageHeight()}
     const url = weex.config.bundleUrl
     let queryJson = MxrUtil.parseUrlParam(url)
 
@@ -139,6 +143,17 @@ export default {
       }, event => {
         console.log('>>>>> push subject callback ', event)
       })
+    },
+    onScroll (e) {
+      console.log(JSON.stringify(e.contentOffset))
+      const offsetY = e.contentOffset.y
+      if (offsetY > 0) {
+        const height = 320 + offsetY
+        const width = height / 320.0 * 240
+        this.bookImageStyle = {width: width + 'px', height: height + 'px'}
+        this.bookImageContainerStyle = {width: width + 10 + 'px', height: height + 10 + 'px', top: 40 - offsetY + 'px'}
+      }
+      this.bgStyle = {top: -380 + offsetY + 'px'}
     }
   }
 }
@@ -149,21 +164,33 @@ export default {
     height: 40px;
   }
   .wrapper {
+    flex: 1;
     background-color: #f4f4f4;
     padding-left: 40px;
     padding-right: 40px;
-    width: 750px;
+    position: relative;
     /*height: 1000px;*/
     /* justify-content: center; */
+  }
+  .bgImage {
+    position: absolute;
+    top: -380px;
+    left: 0px;
+    width: 750px;
+    height: 1000px;
+    filter: blur(180px);
   }
   .inline {
     flex-direction: row;
   }
   .bookInfoView {
     align-items: center;
+    padding-top: 330px;
     /*background-color: #0088fb;*/
   }
   .bookImageContainer {
+    position: absolute;
+    top: 40px;
     width: 250px;
     height: 330px;
     border-radius: 10px;
