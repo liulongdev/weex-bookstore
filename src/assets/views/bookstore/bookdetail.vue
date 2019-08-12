@@ -25,7 +25,7 @@ export default {
     }
   },
   created: function () {
-    const url = weex.config.bundleUrl;
+    const url = weex.config.bundleUrl
     let queryJson = MxrUtil.parseUrlParam(url)
 
     this.bookGuid = queryJson['bookGuid']

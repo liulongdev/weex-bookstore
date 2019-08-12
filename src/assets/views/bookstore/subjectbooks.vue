@@ -64,7 +64,8 @@ export default {
       console.log('>>>>> click book bookGuid: ', bookGuid)
       navigator.push({
         url: `${MxrUtil.weexLocation}/views/BookDetailPage.js?bookGuid=${bookGuid}`,
-        animated: 'true'
+        animated: 'true',
+        titleBarHidden: 'true'
       }, event => {
         console.log('>>> push bookdetail callback ', event)
       })

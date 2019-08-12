@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     goVideoCourseDetail: function (courseId) {
-       navigator.push({
+      navigator.push({
         url: `${MxrUtil.weexLocation}/views/classroom/videocoursedetail.js?courseId=${courseId}`,
         animated: 'true'
       }, event => {
@@ -98,5 +98,5 @@ export default {
     color: #666;
     width: 320px;
     lines: 1;
-  } 
+  }
 </style>

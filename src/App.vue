@@ -3,8 +3,8 @@
     <!--<router-view class="r-box"></router-view>-->
     <!--<tab-bar @tabTo="onTabTo"></tab-bar>-->
     <main-tab-page></main-tab-page>
-    <!--<search-page></search-page>-->
-    <!--<book-detail-page></book-detail-page>-->
+<!--    <search-page></search-page>-->
+<!--    <book-detail-page></book-detail-page>-->
   </div>
 </template>
 

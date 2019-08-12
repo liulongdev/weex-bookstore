@@ -1,5 +1,6 @@
 <template>
-  <scroller v-if="bookDetailM" class="scroller wrapper" show-scrollbar="false" :style="{height: scrollHeight}">
+  <scroller v-if="bookDetailM" class="scroller wrapper" show-scrollbar="false" :style="scrollStyle">
+    <div class="topView"></div>
     <div class="bookInfoView">
       <div class="bookImageContainer">
         <image class="bookImage" :src="bookDetailM && bookDetailM.bookCoverURL"></image>
@@ -10,20 +11,20 @@
       <div class="simpleInfoView inline">
         <div class="oneInfoView">
           <text class="oneInfoText">{{bookDetailM.bookPublisherName}}</text>
-          <text>发布人</text>
+          <text class="oneInfoTitle">发布人</text>
         </div>
         <div class="VLine"></div>
         <div class="oneInfoView">
           <text class="oneInfoText">{{numberToStr(bookDetailM.bookReadTimes)}}</text>
-          <text>浏览数</text>
+          <text class="oneInfoTitle">浏览数</text>
         </div>
         <div class="VLine"></div>
         <div class="oneInfoView">
           <text class="oneInfoText">{{numberToStr(bookDetailM.bookDownloadTimes)}}</text>
-          <text>下载数</text>
+          <text class="oneInfoTitle">下载数</text>
         </div>
       </div>
-      <text @click="toggleShowDescLines" class="bookDescText bookDescLabelShowSome" v-if="isbookDescLabelShowSome">{{bookDetailM && bookDetailM.bookDESC}}</text>
+      <text @click="toggleShowDescLines" class="bookDescText bookDescLabelShowSome" v-if="isBookDescLabelShowSome">{{bookDetailM && bookDetailM.bookDESC}}</text>
       <text @click="toggleShowDescLines" class="bookDescText" v-else>{{bookDetailM && bookDetailM.bookDESC}}</text>
     </div>
     <div class="HLine"></div>
@@ -34,18 +35,31 @@
     <scroller class="bookTagsScroller inline" v-if="bookTags && bookTags.length > 0" scroll-direction="horizontal" show-scrollbar="false">
       <text class="bookTagText" v-bind:key="bIdx" v-for="(bookTag, bIdx) in bookTags">{{bookTag.name}}</text>
     </scroller>
-    <scroller class="recommendBookScroller inline" v-if="recommendBooks && recommendBooks.length > 0" scroll-direction="horizontal" show-scrollbar="false">
-      <div class="bookItemView" v-bind:key="bIdx" v-for="(book, bIdx) in recommendBooks" @click="goBookDetailPage(book.bookGUID)">
-        <image class="bookItemImage" :src="book.bookCoverURL"></image>
-        <text class="bookItemNameText">{{book.bookName}}</text>
+    <div class="zoneListContainer" v-if="zoneArray && zoneArray.length > 0">
+      <div class="HLine"></div>
+      <text class="zoneTitleText">所属专区</text>
+      <div class="zoneCell" v-bind:key="zIdx" v-for="(zone, zIdx) in zoneArray" @click="goZonePage(zone.id)">
+        <text class="zoneNameText">{{zone.name}}</text>
+        <image class="zoneImage" :src="zone.cover"></image>
       </div>
-    </scroller>
+    </div>
+    <div class="recommendBookContainer" v-if="recommendBooks && recommendBooks.length > 0">
+      <div class="HLine"></div>
+      <text class="recommendBookTitleText">相关推荐</text>
+      <scroller class="recommendBookScroller inline" v-if="recommendBooks && recommendBooks.length > 0" scroll-direction="horizontal" show-scrollbar="false">
+        <div class="bookItemView" v-bind:key="bIdx" v-for="(book, bIdx) in recommendBooks" @click="goBookDetailPage(book.bookGUID)">
+          <image class="bookItemImage" :src="book.bookCoverURL"></image>
+          <text class="bookItemNameText">{{book.bookName}}</text>
+        </div>
+      </scroller>
+    </div>
   </scroller>
 </template>
 
 <script>
 import MxrUtil from '../assets/mxrutil.js'
 const navigator = weex.requireModule('navigator')
+
 export default {
   name: 'BookDetailPage',
   data () {
@@ -53,13 +67,15 @@ export default {
       bookDetailM: undefined,
       bookGuid: '9AC6577B5A444E4A9810119C6A4DFBF7',
       bookIconPath: '',
-      isbookDescLabelShowSome: false,
+      isBookDescLabelShowSome: false,
       recommendBooks: [],
       bookTags: [],
-      scrollHeight: '1208px'
+      scrollStyle: {},
+      zoneArray: []
     }
   },
   created: function () {
+    // this.scrollStyle = {height: MxrUtil.getPageHeight()}
     const url = weex.config.bundleUrl
     let queryJson = MxrUtil.parseUrlParam(url)
 
@@ -81,22 +97,26 @@ export default {
     })
     MxrUtil.get('/book/extension/' + this.bookGuid, {}, (res) => {
       if (res.ok) {
-        console.log(res)
         this.recommendBooks = res.data.Body.recommendBooks
         this.bookTags = res.data.Body.bookTags
+      }
+    })
+    MxrUtil.get('/book/zone/' + this.bookGuid, {}, (res) => {
+      if (res.ok) {
+        console.log(res)
+        this.zoneArray = res.data.Body
       }
     })
   },
   methods: {
     toggleShowDescLines: function (el) {
-      this.isbookDescLabelShowSome = !this.isbookDescLabelShowSome
+      this.isBookDescLabelShowSome = !this.isBookDescLabelShowSome
     },
     numberToStr: function (number) {
       if (typeof number === 'number') {
         if (number / 10000 > 0) {
           let str = number / 10000.0 + ''
           if (str.indexOf('.') > -1) {
-            console.log(str.length)
             return str.substring(0, Math.min(str.indexOf('.') + 2, str.length)) + '万'
           }
         }
@@ -108,7 +128,16 @@ export default {
         url: `${MxrUtil.weexLocation}/views/BookDetailPage.js?bookGuid=${bookGUID}`,
         animated: 'true'
       }, event => {
-        console.log('>>> push bookdetail callback ', event)
+        console.log('>>> push book detail callback ', event)
+      })
+    },
+    goZonePage (zoneId) {
+      navigator.push({
+        url: `${MxrUtil.weexLocation}/views/bookstore/subjectbooks.js?recommendId=${zoneId}`,
+        animated: 'true',
+        titleBarHidden: 'true'
+      }, event => {
+        console.log('>>>>> push subject callback ', event)
       })
     }
   }
@@ -116,9 +145,11 @@ export default {
 </script>
 
 <style scoped>
+  .topView {
+    height: 40px;
+  }
   .wrapper {
     background-color: #f4f4f4;
-    padding-top: 40px;
     padding-left: 40px;
     padding-right: 40px;
     width: 750px;
@@ -156,7 +187,7 @@ export default {
   .bookNameText {
     font-size: 36px;
     color: #333;
-    margin-top: 20px;
+    margin-top: 30px;
     lines: 1;
   }
   .simpleInfoView {
@@ -175,12 +206,23 @@ export default {
     /*height: 200px;*/
   }
   .HLine {
+    margin-top: 40px;
+    margin-bottom: 40px;
     background-color: #bbbbbb;
     height: 1px;
   }
   .oneInfoText {
     lines: 1;
     text-overflow: ellipsis;
+    font-size: 28px;
+    color: #666666;
+  }
+  .oneInfoTitle {
+    margin-top: 10px;
+    lines: 1;
+    text-overflow: clip;
+    font-size: 24px;
+    color: #999999;
   }
   .bookDescLabelShowSome {
     lines: 2;
@@ -190,7 +232,6 @@ export default {
     font-size: 30px;
     color: #666;
     margin-top: 50px;
-    padding-bottom: 30px;
   }
   .supportTypeView {
     margin-top: 30px;
@@ -208,10 +249,12 @@ export default {
     color: #fff;
   }
   .bookTagsScroller {
-    margin-top: 30px;
+    margin-top: 40px;
+    width: 670px;
+    height: 70px;
   }
   .bookTagText {
-    padding: 6px 20px 6px 20px;
+    padding: 16px 30px 16px 30px;
     border-color: #00B4FF;
     border-width: 1px;
     border-radius: 8px;
@@ -219,9 +262,33 @@ export default {
     margin-right: 20px;
     font-size: 24px;
   }
-  .bookTagsScroller {
+  /* 所属专区 */
+  .zoneListContainer {
+  }
+  .zoneTitleText {
+    font-size: 34px;
+    color: #333333;
+  }
+  .zoneCell {
+    margin-top: 30px;
+  }
+  .zoneNameText{
+    font-size: 28px;
+    color: #999999;
+  }
+  .zoneImage {
+    margin-top: 10px;
     width: 670px;
-    height: 50px;
+    height: 250px;
+    border-radius: 10px;
+  }
+  /* 相关推荐 */
+  .recommendBookContainer {
+    /*margin-top: 40px;*/
+  }
+  .recommendBookTitleText {
+    font-size: 34px;
+    color: #333333;
   }
   .recommendBookScroller {
     margin-top: 30px;

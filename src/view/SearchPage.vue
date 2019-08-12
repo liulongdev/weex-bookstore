@@ -1,5 +1,5 @@
 <template>
-  <scroller>
+  <scroller :scrollStyle="scrollStyle">
     <!-- 直显示取消按钮 always-show-cancel="showCancel"-->
     <!-- 前面展示选项   mod="hasDep" depName="书城"-->
     <wxc-searchbar class="searchBar" ref="wxc-searchbar"
@@ -9,7 +9,7 @@
                    @wxcSearchbarCloseClicked="wxcSearchbarCloseClicked"
                    @wxcSearchbarInputOnFocus="wxcSearchbarInputOnFocus"
                    @wxcSearchbarInputOnBlur="wxcSearchbarInputOnBlur"
-                   placeholder="请输入关键词"
+                   placeholder="请输入关键词(zone:key)"
                    theme="yellow"
                    returnKeyType="search"
                    autofocus="autofocus"
@@ -35,13 +35,13 @@
       </div>
       <!--专区-->
       <text v-if="this.zoneArray.length > 0" class="sectionTitle">专区</text>
-      <div class="cell" v-bind:key="zIdx" v-for="(zone, zIdx) in zoneArray">
+      <div class="cell" v-bind:key="zIdx" v-for="(zone, zIdx) in zoneArray" @click="goZonePage(zone.zoneId)">
         <text class="zoneTitleText">{{zone.zoneName}}</text>
         <image class="zoneImage" :src="zone.zoneCover"></image>
       </div>
       <!--图书-->
       <text v-if="this.bookArray.length > 0" class="sectionTitle">图书</text>
-      <div class="cell" v-bind:key="bIdx" v-for="(book, bIdx) in bookArray">
+      <div class="cell" v-bind:key="bIdx" v-for="(book, bIdx) in bookArray" @click="goBookDetailPage(book.bookGUID)">
         <div class="inline alignItemCenter">
           <image class="bookImage" :src="book.bookCoverURL"></image>
           <div class="bookInfoContainer">
@@ -61,6 +61,8 @@
 <script>
 import MxrUtil from '../assets/mxrutil.js'
 import { WxcSearchbar, WxcLoading, WxcRichText } from 'weex-ui'
+const navigator = weex.requireModule('navigator')
+
 export default {
   components: { WxcSearchbar, WxcLoading, WxcRichText },
   name: 'SearchPage',
@@ -68,12 +70,17 @@ export default {
     return {
       searchText: '',
       isDisabled: true,
+      autofocus: false,
       isLoadingShow: false,
       courseArray: [],
       zoneArray: [],
       bookArray: [],
-      autofocus: true
+      scrollStyle: {}
     }
+  },
+  created () {
+    // titleBar.showTitleBar(false)
+    this.scrollStyle = {height: MxrUtil.getPageHeight()}
   },
   methods: {
     setValue () {
@@ -175,6 +182,23 @@ export default {
           color: '#999999'
         }
       }]
+    },
+    goBookDetailPage (bookGUID) {
+      navigator.push({
+        url: `${MxrUtil.weexLocation}/views/BookDetailPage.js?bookGuid=${bookGUID}`,
+        animated: 'true'
+      }, event => {
+        console.log('>>> push book detail callback ', event)
+      })
+    },
+    goZonePage (zoneId) {
+      navigator.push({
+        url: `${MxrUtil.weexLocation}/views/bookstore/subjectbooks.js?recommendId=${zoneId}`,
+        animated: 'true',
+        titleBarHidden: 'true'
+      }, event => {
+        console.log('>>>>> push subject callback ', event)
+      })
     }
   }
 }

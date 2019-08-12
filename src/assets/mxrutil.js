@@ -1,4 +1,5 @@
 import MXREncription from './lib/encryption'
+import { Utils } from 'weex-ui'
 const stream = weex.requireModule('stream')
 const MxrUtilModule = weex.requireModule('mxrutil') // 实现了加解密操作、网络请求
 
@@ -13,10 +14,12 @@ let mxrUtil = {
   isWeb: isWeb,
   getBookPath: getBookPath,
   weexLocation: 'http://liulong.site/weex', // js所在的服务器地址
+  // weexLocation: 'http://192.168.31.233:3000/weex', // js所在的服务器地址
   mxrTransfromApi: 'http://liulong.site/api/mxr/core/weex', // 转换梦想人的服务
   parseUrlParam: parseUrlParam,
   encryptionMxr: MXREncription.encryptionMxr,
-  decryptionMxr: MXREncription.decryptionMxr
+  decryptionMxr: MXREncription.decryptionMxr,
+  getPageHeight: getPageHeight
 }
 
 function platform () {
@@ -239,6 +242,12 @@ function parseUrlParam (url) {
     }
   }
   return queryJson
+}
+
+function getPageHeight () {
+  const { env } = weex.config
+  const navHeight = Utils.env.isWeb() ? 0 : (Utils.env.isIPhoneX() ? 176 : 128)
+  return env.deviceHeight / env.deviceWidth * 750 - navHeight
 }
 
 export default mxrUtil

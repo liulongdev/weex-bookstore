@@ -32,7 +32,7 @@
           </scroller>
         </div>
         <!-- 专区楼层 -->
-        <div @click="goSubjuectPage(floor.items[0].itemId)" class="floorView" v-if="floor.type === 3 && floor.items.length > 0">
+        <div @click="goSubjectPage(floor.items[0].itemId)" class="floorView" v-if="floor.type === 3 && floor.items.length > 0">
           <text class="floorTitleLabel">{{floor.moduleName}}</text>
           <image class="image" resize="stretch" :src="floor.items[0].itemIcon"></image>
         </div>
@@ -41,11 +41,11 @@
           <div v-if="floor.items.length >= 2">
             <text class="floorTitleLabel">{{floor.moduleName}}</text>
             <div class="twoTopicView">
-              <div class="oneTopicView"  @click="goSubjuectPage(floor.items[0].itemId)">
+              <div class="oneTopicView"  @click="goSubjectPage(floor.items[0].itemId)">
                 <image class="towTopicImage" resize="stretch" :src="floor.items[0].itemIcon"></image>
                 <text class="topicTitleLabel">{{floor.items[0].itemName}}</text>
               </div>
-              <div class="oneTopicView secondTopicView" @click="goSubjuectPage(floor.items[1].itemId)">
+              <div class="oneTopicView secondTopicView" @click="goSubjectPage(floor.items[1].itemId)">
                 <image class="towTopicImage" resize="stretch" :src="floor.items[1].itemIcon"></image>
                 <text class="topicTitleLabel">{{floor.items[1].itemName}}</text>
               </div>
@@ -56,7 +56,7 @@
         <div class="floorView" v-if="floor.type === 5 && floor.items.length == 3" >
           <text class="floorTitleLabel">{{floor.moduleName}}</text>
           <div class="thirdItemContainer">
-            <div class="thirdItemCell" v-bind:key="iIdx" v-for="(item, iIdx) in floor.items" @click="goSubjuectPage(item.itemId)">
+            <div class="thirdItemCell" v-bind:key="iIdx" v-for="(item, iIdx) in floor.items" @click="goSubjectPage(item.itemId)">
               <image class="thirdImg" resize="stretch" :src="item.itemIcon"></image>
               <!--<text class="thirdTitleLabel">{{item.itemName}}</text>-->
             </div>
@@ -134,16 +134,18 @@ export default {
       console.log('>>>>> click book bookGuid: ', bookGuid)
       navigator.push({
         url: `${MxrUtil.weexLocation}/views/BookDetailPage.js?bookGuid=${bookGuid}`,
-        animated: 'true'
+        animated: 'true',
+        titleBarHidden: 'true'
       }, event => {
         console.log('>>> push bookdetail callback ', event)
       })
     },
-    goSubjuectPage: function (recommendId) {
+    goSubjectPage: function (recommendId) {
       console.log('>>>>> click subject id : ', recommendId)
       navigator.push({
         url: `${MxrUtil.weexLocation}/views/bookstore/subjectbooks.js?recommendId=${recommendId}`,
-        animated: 'true'
+        animated: 'true',
+        titleBarHidden: 'true'
       }, event => {
         console.log('>>>>> push subject callback ', event)
       })
@@ -151,7 +153,8 @@ export default {
     goSerachPage: function () {
       navigator.push({
         url: `${MxrUtil.weexLocation}/views/SearchPage.js`,
-        animated: 'true'
+        animated: 'true',
+        titleBarHidden: 'true'
       }, event => {
         console.log('>>>>> push subject callback ', event)
       })

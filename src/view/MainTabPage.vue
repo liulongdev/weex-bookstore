@@ -3,7 +3,8 @@
                :tab-styles="tabStyles"
                title-type="icon"
                @wxcTabBarCurrentTabSelected="wxcTabBarCurrentTabSelected"
-               isTabView="false">
+               isTabView="false"
+               class="tabBar">
     <div class="item-container" :style="contentStyle"><home-page></home-page></div>
     <div class="item-container" :style="contentStyle"><class-romm></class-romm></div>
     <div class="item-container" :style="contentStyle"><circle-page></circle-page></div>
@@ -14,9 +15,9 @@
   .item-container {
     width: 750px;
     background-color: #f2f3f4;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 120px;
+    /*align-items: center;*/
+    /*justify-content: center;*/
+    /*margin-bottom: 120px;*/
   }
 </style>
 
@@ -28,23 +29,22 @@ import NavigationBar from '../components/widget/NavigationBar.vue'
 import HomePage from './BookstorePage.vue'
 import CirclePage from './CirclePage.vue'
 import ClassRomm from './ClassRoom.vue'
-const modal = weex.requireModule('modal')
 export default {
   components: { TabBar, WxcTabBar, NavigationBar, CirclePage, HomePage, ClassRomm },
   data: () => ({
     tabTitles: [{
-      title: '书城'
-      // icon: 'https://gw.alicdn.com/tfs/TB1MWXdSpXXXXcmXXXXXXXXXXXX-72-72.png',
-      // activeIcon: 'https://gw.alicdn.com/tfs/TB1kCk2SXXXXXXFXFXXXXXXXXXX-72-72.png'
+      title: '书城',
+      icon: 'https://liulong.site/weex/icons/icon_tab_bookstore_nor.png',
+      activeIcon: 'https://liulong.site/weex/icons/icon_tab_bookstore_sel.png'
     }, {
-      title: 'AR课堂'
-      // icon: 'https://gw.alicdn.com/tfs/TB1VKMISXXXXXbyaXXXXXXXXXXX-72-72.png',
-      // activeIcon: 'https://gw.alicdn.com/tfs/TB1aTgZSXXXXXazXFXXXXXXXXXX-72-72.png',
+      title: 'AR课堂',
+      icon: 'https://liulong.site/weex/icons/icon_tab_classroom_nor.png',
+      activeIcon: 'https://liulong.site/weex/icons/icon_tab_classroom_sel.png'
       // badge: 5
     }, {
-      title: '梦想圈'
-      // icon: 'https://gw.alicdn.com/tfs/TB1ARoKSXXXXXc9XVXXXXXXXXXX-72-72.png',
-      // activeIcon: 'https://gw.alicdn.com/tfs/TB19Z72SXXXXXamXFXXXXXXXXXX-72-72.png'
+      title: '梦想圈',
+      icon: 'https://liulong.site/weex/icons/icon_tab_circle_nor.png',
+      activeIcon: 'https://liulong.site/weex/icons/icon_tab_circle_sel.png'
     }],
     tabStyles: {
       bgColor: '#FFFFFF',
@@ -52,8 +52,8 @@ export default {
       activeTitleColor: '#52ceff',
       activeBgColor: '#FFFFFF',
       isActiveTitleBold: true,
-      iconWidth: 60,
-      iconHeight: 60,
+      iconWidth: 44,
+      iconHeight: 44,
       width: 160,
       height: 100,
       fontSize: 24,
@@ -63,7 +63,7 @@ export default {
     mainHeight: 0
   }),
   created () {
-    const tabPageHeight = Utils.env.getPageHeight() - (MxrUtil.isIOS() ? 86 : 120)
+    const tabPageHeight = MxrUtil.getPageHeight() - (MxrUtil.isIOS() ? (90) : 120)
     this.contentStyle = {height: tabPageHeight}
     this.mainHeight = Utils.env.getScreenHeight()
   },
