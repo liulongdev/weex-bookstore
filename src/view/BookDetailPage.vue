@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <!--<image class="bgImage" :src="bookDetailM && bookDetailM.bookCoverURL" resize="cover" :style="bgStyle"></image>-->
+    <image class="bgImage" :src="bookDetailM && bookDetailM.bookCoverURL" resize="cover" :style="bgStyle"></image>
     <scroller v-if="bookDetailM" class="scroller" show-scrollbar="false" @scroll="onScroll">
       <div class="bookInfoView">
         <div style="height: 40px;"></div>
@@ -80,10 +80,10 @@ export default {
     }
   },
   created: function () {
-    const url = weex.config.bundleUrl
-    let queryJson = MxrUtil.parseUrlParam(url)
-
-    this.bookGuid = queryJson['bookGuid']
+    // const url = weex.config.bundleUrl
+    // let queryJson = MxrUtil.parseUrlParam(url)
+    //
+    // this.bookGuid = queryJson['bookGuid']
     const getBookDetailApi = '/book/detail/' + this.bookGuid
     console.log('>>>> bookdetail page : ', getBookDetailApi)
     MxrUtil.get(getBookDetailApi, {}, (res) => {
@@ -153,7 +153,7 @@ export default {
         this.bookImageStyle = {width: width + 'px', height: height + 'px'}
         this.bookImageContainerStyle = {width: width + 10 + 'px', height: height + 10 + 'px', top: 40 - offsetY + 'px'}
       }
-      this.bgStyle = {top: -380 + offsetY + 'px'}
+      // this.bgStyle = {top: -380 + offsetY + 'px'}
     }
   }
 }
@@ -174,11 +174,11 @@ export default {
   }
   .bgImage {
     position: absolute;
-    top: -380px;
+    top: 0px;
     left: 0px;
     width: 750px;
-    height: 1000px;
-    filter: blur(180px);
+    height: 1334px;
+    filter: blur(275px);
   }
   .inline {
     flex-direction: row;
