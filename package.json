@@ -32,7 +32,7 @@
   "license": "MIT",
   "dependencies": {
     "buffer": "^5.2.1",
-    "highlight.js": "^9.15.8",
+    "highlight.js": "^10.4.1",
     "himalaya": "^1.1.0",
     "moment": "^2.24.0",
     "node-sass": "^4.12.0",
